@@ -17,9 +17,9 @@ public partial class Direccion
 
     public int? Numero { get; set; }
 
-    public virtual ICollection<Actividad> Actividades { get; set; } = new List<Actividad>();
+    //public virtual ICollection<Actividad> Actividades { get; set; } = new List<Actividad>();
 
-    public virtual ICollection<Alojamiento> Alojamientos { get; set; } = new List<Alojamiento>();
+    //public virtual ICollection<Alojamiento> Alojamientos { get; set; } = new List<Alojamiento>();
 
-    public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
+    //public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
 }

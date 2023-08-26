@@ -19,9 +19,6 @@ builder.Services.AddDbContext<DataBaseContext>(options =>
         Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.23-mysql"));
 });
 
-string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-
-
 builder.Services.AddCors();
 
 var app = builder.Build();

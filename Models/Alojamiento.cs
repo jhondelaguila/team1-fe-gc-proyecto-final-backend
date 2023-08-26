@@ -19,13 +19,13 @@ public partial class Alojamiento
 
     public int IdDireccion { get; set; }
 
-    public virtual Direccion IdDireccionNavigation { get; set; } = null!;
+    //public virtual Direccion IdDireccionNavigation { get; set; } = null!;
 
-    public virtual ICollection<Imagen> Imagenes { get; set; } = new List<Imagen>();
+    //public virtual ICollection<Imagen> Imagenes { get; set; } = new List<Imagen>();
 
-    public virtual ICollection<Oferta> Oferta { get; set; } = new List<Oferta>();
+    //public virtual ICollection<Oferta> Oferta { get; set; } = new List<Oferta>();
 
-    public virtual ICollection<Oferta> IdOferta { get; set; } = new List<Oferta>();
+    //public virtual ICollection<Oferta> IdOferta { get; set; } = new List<Oferta>();
 
-    public virtual ICollection<Servicio> Servicios { get; set; } = new List<Servicio>();
+    //public virtual ICollection<Servicio> Servicios { get; set; } = new List<Servicio>();
 }

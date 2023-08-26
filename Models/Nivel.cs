@@ -11,5 +11,5 @@ public partial class Nivel
 
     public int ExperienciaMinima { get; set; }
 
-    public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
+    //public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
 }

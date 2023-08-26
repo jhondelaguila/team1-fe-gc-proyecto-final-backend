@@ -15,9 +15,9 @@ public partial class Imagen
 
     public string? Ubicacion { get; set; }
 
-    public virtual Actividad? IdActividadNavigation { get; set; }
+    //public virtual Actividad? IdActividadNavigation { get; set; }
 
-    public virtual Alojamiento? IdAlojamientoNavigation { get; set; }
+    //public virtual Alojamiento? IdAlojamientoNavigation { get; set; }
 
-    public virtual ICollection<Oferta> IdOferta { get; set; } = new List<Oferta>();
+    //public virtual ICollection<Oferta> IdOferta { get; set; } = new List<Oferta>();
 }

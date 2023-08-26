@@ -53,9 +53,9 @@ public partial class DataBaseContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("titulo");
 
-            entity.HasOne(d => d.IdDireccionNavigation).WithMany(p => p.Actividades)
+            /*entity.HasOne(d => d.IdDireccionNavigation).WithMany(p => p.Actividades)
                 .HasForeignKey(d => d.IdDireccion)
-                .HasConstraintName("actividades_ibfk_1");
+                .HasConstraintName("actividades_ibfk_1");*/
         });
 
         modelBuilder.Entity<Alojamiento>(entity =>
@@ -82,9 +82,9 @@ public partial class DataBaseContext : DbContext
                 .HasMaxLength(100)
                 .HasColumnName("web");
 
-            entity.HasOne(d => d.IdDireccionNavigation).WithMany(p => p.Alojamientos)
+            /*entity.HasOne(d => d.IdDireccionNavigation).WithMany(p => p.Alojamientos)
                 .HasForeignKey(d => d.IdDireccion)
-                .HasConstraintName("alojamientos_ibfk_1");
+                .HasConstraintName("alojamientos_ibfk_1");*/
         });
 
         modelBuilder.Entity<Direccion>(entity =>
@@ -131,7 +131,7 @@ public partial class DataBaseContext : DbContext
                 .HasMaxLength(150)
                 .HasColumnName("url");
 
-            entity.HasOne(d => d.IdActividadNavigation).WithMany(p => p.Imagenes)
+            /*entity.HasOne(d => d.IdActividadNavigation).WithMany(p => p.Imagenes)
                 .HasForeignKey(d => d.IdActividad)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("imagenes_ibfk_1");
@@ -159,7 +159,7 @@ public partial class DataBaseContext : DbContext
                         j.HasIndex(new[] { "IdOferta" }, "id_oferta");
                         j.IndexerProperty<int>("IdImagen").HasColumnName("id_imagen");
                         j.IndexerProperty<int>("IdOferta").HasColumnName("id_oferta");
-                    });
+                    });*/
         });
 
         modelBuilder.Entity<Nivel>(entity =>
@@ -202,7 +202,7 @@ public partial class DataBaseContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("titulo");
 
-            entity.HasOne(d => d.IdActividadNavigation).WithMany(p => p.Oferta)
+            /*entity.HasOne(d => d.IdActividadNavigation).WithMany(p => p.Oferta)
                 .HasForeignKey(d => d.IdActividad)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("ofertas_ibfk_1");
@@ -251,7 +251,7 @@ public partial class DataBaseContext : DbContext
                         j.IndexerProperty<string>("IdUsuario")
                             .HasMaxLength(50)
                             .HasColumnName("id_usuario");
-                    });
+                    });*/
         });
 
         modelBuilder.Entity<Reserva>(entity =>
@@ -274,13 +274,13 @@ public partial class DataBaseContext : DbContext
             entity.Property(e => e.FechaFin).HasColumnName("fecha_fin");
             entity.Property(e => e.FechaInicio).HasColumnName("fecha_inicio");
 
-            entity.HasOne(d => d.IdOfertaNavigation).WithMany(p => p.Reservas)
+            /*entity.HasOne(d => d.IdOfertaNavigation).WithMany(p => p.Reservas)
                 .HasForeignKey(d => d.IdOferta)
                 .HasConstraintName("reservas_ibfk_1");
 
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Reservas)
                 .HasForeignKey(d => d.IdUsuario)
-                .HasConstraintName("reservas_ibfk_2");
+                .HasConstraintName("reservas_ibfk_2");*/
         });
 
         modelBuilder.Entity<Servicio>(entity =>
@@ -293,7 +293,7 @@ public partial class DataBaseContext : DbContext
                 .HasMaxLength(20)
                 .HasColumnName("nombre");
 
-            entity.HasMany(d => d.IdAlojamientos).WithMany(p => p.Servicios)
+            /*entity.HasMany(d => d.IdAlojamientos).WithMany(p => p.Servicios)
                 .UsingEntity<Dictionary<string, object>>(
                     "ServiciosAlojamiento",
                     r => r.HasOne<Alojamiento>().WithMany()
@@ -313,7 +313,7 @@ public partial class DataBaseContext : DbContext
                             .HasMaxLength(20)
                             .HasColumnName("servicio");
                         j.IndexerProperty<int>("IdAlojamiento").HasColumnName("id_alojamiento");
-                    });
+                    });*/
         });
 
         modelBuilder.Entity<Usuario>(entity =>
@@ -354,14 +354,14 @@ public partial class DataBaseContext : DbContext
                 .HasMaxLength(15)
                 .HasColumnName("telefono");
 
-            entity.HasOne(d => d.IdDireccionNavigation).WithMany(p => p.Usuarios)
+            /*entity.HasOne(d => d.IdDireccionNavigation).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.IdDireccion)
                 .HasConstraintName("usuarios_ibfk_2");
 
             entity.HasOne(d => d.NivelNavigation).WithMany(p => p.Usuarios)
                 .HasForeignKey(d => d.Nivel)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("usuarios_ibfk_1");
+                .HasConstraintName("usuarios_ibfk_1");*/
         });
 
         OnModelCreatingPartial(modelBuilder);

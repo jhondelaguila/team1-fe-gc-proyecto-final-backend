@@ -7,5 +7,5 @@ public partial class Servicio
 {
     public string Nombre { get; set; } = null!;
 
-    public virtual ICollection<Alojamiento> IdAlojamientos { get; set; } = new List<Alojamiento>();
+    //public virtual ICollection<Alojamiento> IdAlojamientos { get; set; } = new List<Alojamiento>();
 }

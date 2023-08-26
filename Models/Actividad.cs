@@ -14,9 +14,9 @@ public partial class Actividad
 
     public int IdDireccion { get; set; }
 
-    public virtual Direccion IdDireccionNavigation { get; set; } = null!;
+    //public virtual Direccion IdDireccionNavigation { get; set; } = null!;
 
-    public virtual ICollection<Imagen> Imagenes { get; set; } = new List<Imagen>();
+    //public virtual ICollection<Imagen> Imagenes { get; set; } = new List<Imagen>();
 
-    public virtual ICollection<Oferta> Oferta { get; set; } = new List<Oferta>();
+    //public virtual ICollection<Oferta> Oferta { get; set; } = new List<Oferta>();
 }

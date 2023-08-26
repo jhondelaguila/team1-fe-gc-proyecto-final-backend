@@ -15,7 +15,7 @@ public partial class Reserva
 
     public string? Estado { get; set; }
 
-    public virtual Oferta IdOfertaNavigation { get; set; } = null!;
+    //public virtual Oferta IdOfertaNavigation { get; set; } = null!;
 
-    public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
+    //public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
 }

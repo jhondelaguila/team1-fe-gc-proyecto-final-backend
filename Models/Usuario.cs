@@ -27,11 +27,11 @@ public partial class Usuario
 
     public bool Admin { get; set; }
 
-    public virtual Direccion IdDireccionNavigation { get; set; } = null!;
+    //public virtual Direccion IdDireccionNavigation { get; set; } = null!;
 
-    public virtual Nivel? NivelNavigation { get; set; }
+    //public virtual Nivel? NivelNavigation { get; set; }
 
-    public virtual ICollection<Reserva> Reservas { get; set; } = new List<Reserva>();
+    //public virtual ICollection<Reserva> Reservas { get; set; } = new List<Reserva>();
 
-    public virtual ICollection<Oferta> IdOferta { get; set; } = new List<Oferta>();
+    //public virtual ICollection<Oferta> IdOferta { get; set; } = new List<Oferta>();
 }
