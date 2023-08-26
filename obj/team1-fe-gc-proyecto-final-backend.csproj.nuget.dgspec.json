@@ -1,26 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "/Users/jhonjr/Desktop/BootCamp Grupo Castillo/team1-fe-gc-proyecto-final-backend/team1-fe-gc-proyecto-final-backend.csproj": {}
+    "D:\\JJDAP\\repositorios\\team1-fe-gc-proyecto-final-backend\\team1-fe-gc-proyecto-final-backend.csproj": {}
   },
   "projects": {
-    "/Users/jhonjr/Desktop/BootCamp Grupo Castillo/team1-fe-gc-proyecto-final-backend/team1-fe-gc-proyecto-final-backend.csproj": {
+    "D:\\JJDAP\\repositorios\\team1-fe-gc-proyecto-final-backend\\team1-fe-gc-proyecto-final-backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/jhonjr/Desktop/BootCamp Grupo Castillo/team1-fe-gc-proyecto-final-backend/team1-fe-gc-proyecto-final-backend.csproj",
+        "projectUniqueName": "D:\\JJDAP\\repositorios\\team1-fe-gc-proyecto-final-backend\\team1-fe-gc-proyecto-final-backend.csproj",
         "projectName": "team1-fe-gc-proyecto-final-backend",
-        "projectPath": "/Users/jhonjr/Desktop/BootCamp Grupo Castillo/team1-fe-gc-proyecto-final-backend/team1-fe-gc-proyecto-final-backend.csproj",
-        "packagesPath": "/Users/jhonjr/.nuget/packages/",
-        "outputPath": "/Users/jhonjr/Desktop/BootCamp Grupo Castillo/team1-fe-gc-proyecto-final-backend/obj/",
+        "projectPath": "D:\\JJDAP\\repositorios\\team1-fe-gc-proyecto-final-backend\\team1-fe-gc-proyecto-final-backend.csproj",
+        "packagesPath": "C:\\Users\\JHON PC\\.nuget\\packages\\",
+        "outputPath": "D:\\JJDAP\\repositorios\\team1-fe-gc-proyecto-final-backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/jhonjr/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\JHON PC\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
-          "/usr/local/share/dotnet/sdk/7.0.302/Sdks/Microsoft.NET.Sdk.Web/library-packs": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -94,7 +95,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.302/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
         }
       }
     }
