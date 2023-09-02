@@ -29,16 +29,16 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
             if (_userData != null && _userData.Email != null && _userData.Pass != null)
             {
                 var user = await GetUser(_userData.Email);
-                bool validPass = BCrypt.Net.BCrypt.Verify(_userData.Pass, user.Value.Pass);
+                bool validPass = BCrypt.Net.BCrypt.Verify(_userData.Pass, user.Pass);
                 if (validPass)
                 {
                     var claims = new[] {
                         new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                         new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                        new Claim("Id", user.Value.Id.ToString()),
-                        new Claim("Email", user.Value.Email),
-                        new Claim("Admin", user.Value.Admin.ToString())
+                        new Claim("Id", user.Id.ToString()),
+                        new Claim("Email", user.Email),
+                        new Claim("Admin", user.Admin.ToString())
                     };
 
                     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -49,7 +49,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
                     var response = new SignInResponseDto
                     {
                         Token = tokenString,
-                        Usuario = user.Value,
+                        Usuario = user,
                     };
 
                     return new OkObjectResult(response);
@@ -79,9 +79,9 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
             return await _context.Usuarios.FindAsync(usuario.Id);
         }
 
-        public async Task<ActionResult<Usuario>> GetUser(string email)
+        private async Task<Usuario> GetUser(string email)
         {
-            return await _context.Usuarios.Where(u => u.Email == email).FirstOrDefaultAsync();
+            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
         }
     }
 }
