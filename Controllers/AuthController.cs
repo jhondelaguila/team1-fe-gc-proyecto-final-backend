@@ -1,35 +1,32 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using team1_fe_gc_proyecto_final_backend.Data;
+using team1_fe_gc_proyecto_final_backend.DTOs;
 using team1_fe_gc_proyecto_final_backend.Models;
 
 namespace team1_fe_gc_proyecto_final_backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TokenController : ControllerBase
+    public class AuthController : ControllerBase
     {
         public IConfiguration _configuration;
-        private readonly DataBaseContext _context;
+        private readonly DatabaseContext _context;
 
-        public TokenController(IConfiguration config, DataBaseContext context) 
+        public AuthController(IConfiguration config, DatabaseContext context)
         {
             _configuration = config;
             _context = context;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Post(Usuario _userData) 
+        [HttpPost, Route("signin")]
+        public async Task<IActionResult> Post(Usuario _userData)
         {
-            if(_userData != null && _userData.Email != null && _userData.Pass != null)
+            if (_userData != null && _userData.Email != null && _userData.Pass != null)
             {
                 var user = await GetUser(_userData.Email, _userData.Pass);
                 if (user != null)
@@ -38,32 +35,51 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
                         new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                         new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                        new Claim("Nombre", user.Nombre),
-                        new Claim("Apellidos", user.Apellidos),
+                        new Claim("Id", user.Id.ToString()),
                         new Claim("Email", user.Email),
+                        new Claim("Admin", user.Admin.ToString())
                     };
 
                     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-
                     var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
                     var token = new JwtSecurityToken(_configuration["Jwt:Issuer"], _configuration["Jwt:Audience"], claims, expires: DateTime.UtcNow.AddDays(1), signingCredentials: signIn);
+                    string tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
-                    return Ok(new JwtSecurityTokenHandler().WriteToken(token));
+                    var response = new SignInResponseDto
+                    {
+                        Token = tokenString,
+                        Usuario = user,
+                    };
+
+                    return new OkObjectResult(response);
                 }
                 else
                 {
                     return BadRequest();
                 }
-            }else
+            }
+            else
             {
                 return BadRequest();
             }
         }
 
+        [HttpPost("signup")]
+        public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
+        {
+            if (_context.Usuarios == null)
+            {
+                return Problem("Entity set 'DatabaseContext.Usuarios'  is null.");
+            }
+            _context.Usuarios.Add(usuario);
+            await _context.SaveChangesAsync();
+
+            return await _context.Usuarios.FindAsync(usuario.Id);
+        }
+
         private async Task<Usuario> GetUser(string email, string password)
         {
-            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email && u.Pass == password );
+            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email && u.Pass == password);
         }
     }
 }

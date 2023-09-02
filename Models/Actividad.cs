@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace team1_fe_gc_proyecto_final_backend.Models;
 
-
 public partial class Actividad
 {
     public int Id { get; set; }
@@ -18,5 +17,5 @@ public partial class Actividad
 
     //public virtual ICollection<Imagen> Imagenes { get; set; } = new List<Imagen>();
 
-    //public virtual ICollection<Oferta> Oferta { get; set; } = new List<Oferta>();
+    //public virtual ICollection<OfertasActividades> OfertasActividades { get; set; } = new List<OfertasActividades>();
 }

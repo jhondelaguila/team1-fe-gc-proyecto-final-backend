@@ -21,19 +21,15 @@ public partial class Oferta
 
     public string? Descripcion { get; set; }
 
-    public int? IdActividad { get; set; }
-
     public int IdAlojamiento { get; set; }
 
-    //public virtual Actividad? IdActividadNavigation { get; set; }
+    //public virtual ICollection<Favorito> Favoritos { get; set; } = new List<Favorito>();
 
     //public virtual Alojamiento IdAlojamientoNavigation { get; set; } = null!;
 
+    //public virtual ICollection<OfertasActividades> OfertasActividades { get; set; } = new List<OfertasActividades>();
+
+    //public virtual ICollection<OfertasImagenes> OfertasImagenes { get; set; } = new List<OfertasImagenes>();
+
     //public virtual ICollection<Reserva> Reservas { get; set; } = new List<Reserva>();
-
-    //public virtual ICollection<Alojamiento> IdAlojamientos { get; set; } = new List<Alojamiento>();
-
-    //public virtual ICollection<Imagen> IdImagens { get; set; } = new List<Imagen>();
-
-    //public virtual ICollection<Usuario> IdUsuarios { get; set; } = new List<Usuario>();
 }

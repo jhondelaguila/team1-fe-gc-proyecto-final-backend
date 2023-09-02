@@ -8,20 +8,20 @@ namespace team1_fe_gc_proyecto_final_backend
 {
     public class Startup
     {
-        public IConfiguration Configuration { get;}
-        public Startup(IConfiguration configuration) 
+        public IConfiguration Configuration { get; }
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public void ConfigureServices(IServiceCollection services) 
+        public void ConfigureServices(IServiceCollection services)
         {
             var connection = Configuration.GetConnectionString("vivaviajes-db");
-            services.AddDbContext<DataBaseContext>(options => options.UseMySql(connection, Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.23-mysql")));
-            
+            services.AddDbContext<DatabaseContext>(options => options.UseMySql(connection, Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.23-mysql")));
+
             services.AddControllers();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => 
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
                 {
                     options.RequireHttpsMetadata = false;
                     options.SaveToken = true;
@@ -39,16 +39,16 @@ namespace team1_fe_gc_proyecto_final_backend
             services.AddCors();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) 
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseSwagger();
 
-            app.UseSwaggerUI( c =>
+            app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
-            if (env.IsDevelopment()) 
+            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -64,7 +64,7 @@ namespace team1_fe_gc_proyecto_final_backend
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseEndpoints(endpoints => 
+            app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
