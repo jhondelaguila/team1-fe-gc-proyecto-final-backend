@@ -28,16 +28,17 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
         {
             if (_userData != null && _userData.Email != null && _userData.Pass != null)
             {
-                var user = await GetUser(_userData.Email, _userData.Pass);
-                if (user != null)
+                var user = await GetUser(_userData.Email);
+                bool validPass = BCrypt.Net.BCrypt.Verify(_userData.Pass, user.Value.Pass);
+                if (validPass)
                 {
                     var claims = new[] {
                         new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                         new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                        new Claim("Id", user.Id.ToString()),
-                        new Claim("Email", user.Email),
-                        new Claim("Admin", user.Admin.ToString())
+                        new Claim("Id", user.Value.Id.ToString()),
+                        new Claim("Email", user.Value.Email),
+                        new Claim("Admin", user.Value.Admin.ToString())
                     };
 
                     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -48,7 +49,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
                     var response = new SignInResponseDto
                     {
                         Token = tokenString,
-                        Usuario = user,
+                        Usuario = user.Value,
                     };
 
                     return new OkObjectResult(response);
@@ -71,15 +72,16 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
             {
                 return Problem("Entity set 'DatabaseContext.Usuarios'  is null.");
             }
+            usuario.Pass = BCrypt.Net.BCrypt.HashPassword(usuario.Pass);
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
 
             return await _context.Usuarios.FindAsync(usuario.Id);
         }
 
-        private async Task<Usuario> GetUser(string email, string password)
+        public async Task<ActionResult<Usuario>> GetUser(string email)
         {
-            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email && u.Pass == password);
+            return await _context.Usuarios.Where(u => u.Email == email).FirstOrDefaultAsync();
         }
     }
 }

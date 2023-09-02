@@ -906,3 +906,4 @@ D:\JJDAP\repositorios\team1-fe-gc-proyecto-final-backend\obj\Debug\net6.0\team1-
 D:\JJDAP\repositorios\team1-fe-gc-proyecto-final-backend\obj\Debug\net6.0\ref\team1-fe-gc-proyecto-final-backend.dll
 D:\JJDAP\repositorios\team1-fe-gc-proyecto-final-backend\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 D:\JJDAP\repositorios\team1-fe-gc-proyecto-final-backend\bin\Debug\net6.0\Microsoft.IdentityModel.Abstractions.dll
+D:\JJDAP\repositorios\team1-fe-gc-proyecto-final-backend\bin\Debug\net6.0\BCrypt.Net-Next.dll

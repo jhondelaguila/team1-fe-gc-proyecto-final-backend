@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "wB7XtdQ8gf3NH5vfSM2eTIDF18+cWY8YLHM9OrRsBT2lhARy2V0ua2UT0KxoIWjTJrcwkIIHKnAvcokRjX/x6w==",
+  "dgSpecHash": "Tdqfh8F1+Z8w1sKH/ExSIOPzTEm7l3IIv+B6OzT6hSmvFZoHgBJCw0ch4bI15ZHTOs0Gwqj9aIH4CGyd4jmqvg==",
   "success": true,
   "projectFilePath": "D:\\JJDAP\\repositorios\\team1-fe-gc-proyecto-final-backend\\team1-fe-gc-proyecto-final-backend.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\JHON PC\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\JHON PC\\.nuget\\packages\\bouncycastle.netcore\\1.8.3\\bouncycastle.netcore.1.8.3.nupkg.sha512",
     "C:\\Users\\JHON PC\\.nuget\\packages\\google.protobuf\\3.11.4\\google.protobuf.3.11.4.nupkg.sha512",
     "C:\\Users\\JHON PC\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",
