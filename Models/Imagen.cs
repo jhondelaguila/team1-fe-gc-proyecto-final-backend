@@ -19,5 +19,5 @@ public partial class Imagen
 
     //public virtual Alojamiento? IdAlojamientoNavigation { get; set; }
 
-    //public virtual ICollection<Oferta> IdOferta { get; set; } = new List<Oferta>();
+    //public virtual ICollection<OfertasImagenes> OfertasImagenes { get; set; } = new List<OfertasImagenes>();
 }

@@ -5,7 +5,9 @@ namespace team1_fe_gc_proyecto_final_backend.Models;
 
 public partial class Servicio
 {
-    public string Nombre { get; set; } = null!;
+    public int Id { get; set; }
 
-    //public virtual ICollection<Alojamiento> IdAlojamientos { get; set; } = new List<Alojamiento>();
+    public string? Nombre { get; set; }
+
+    //public virtual ICollection<ServiciosAlojamientos> ServiciosAlojamientos { get; set; } = new List<ServiciosAlojamientos>();
 }
