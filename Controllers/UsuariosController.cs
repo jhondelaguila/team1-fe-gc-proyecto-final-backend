@@ -14,9 +14,9 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
     [ApiController]
     public class UsuariosController : ControllerBase
     {
-        private readonly DataBaseContext _context;
+        private readonly DatabaseContext _context;
 
-        public UsuariosController(DataBaseContext context)
+        public UsuariosController(DatabaseContext context)
         {
             _context = context;
         }
@@ -34,7 +34,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
 
         // GET: api/Usuarios/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Usuario>> GetUsuario(string id)
+        public async Task<ActionResult<Usuario>> GetUsuario(int id)
         {
           if (_context.Usuarios == null)
           {
@@ -53,9 +53,9 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
         // PUT: api/Usuarios/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsuario(string id, Usuario usuario)
+        public async Task<IActionResult> PutUsuario(int id, Usuario usuario)
         {
-            if (id != usuario.Email)
+            if (id != usuario.Id)
             {
                 return BadRequest();
             }
@@ -88,31 +88,17 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
         {
           if (_context.Usuarios == null)
           {
-              return Problem("Entity set 'DataBaseContext.Usuarios'  is null.");
+              return Problem("Entity set 'DatabaseContext.Usuarios'  is null.");
           }
             _context.Usuarios.Add(usuario);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (UsuarioExists(usuario.Email))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUsuario", new { id = usuario.Email }, usuario);
+            return CreatedAtAction("GetUsuario", new { id = usuario.Id }, usuario);
         }
 
         // DELETE: api/Usuarios/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUsuario(string id)
+        public async Task<IActionResult> DeleteUsuario(int id)
         {
             if (_context.Usuarios == null)
             {
@@ -130,9 +116,9 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
             return NoContent();
         }
 
-        private bool UsuarioExists(string id)
+        private bool UsuarioExists(int id)
         {
-            return (_context.Usuarios?.Any(e => e.Email == id)).GetValueOrDefault();
+            return (_context.Usuarios?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

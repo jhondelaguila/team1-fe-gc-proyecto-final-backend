@@ -5,7 +5,9 @@ namespace team1_fe_gc_proyecto_final_backend.Models;
 
 public partial class Nivel
 {
-    public string Nombre { get; set; } = null!;
+    public int Id { get; set; }
+
+    public string? Nombre { get; set; }
 
     public string? Ventajas { get; set; }
 

@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using team1_fe_gc_proyecto_final_backend.Data;
 using team1_fe_gc_proyecto_final_backend.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace team1_fe_gc_proyecto_final_backend.Controllers
 {
@@ -15,9 +14,9 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
     [ApiController]
     public class OfertasController : ControllerBase
     {
-        private readonly DataBaseContext _context;
+        private readonly DatabaseContext _context;
 
-        public OfertasController(DataBaseContext context)
+        public OfertasController(DatabaseContext context)
         {
             _context = context;
         }
@@ -30,49 +29,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
           {
               return NotFound();
           }
-            return await _context.Ofertas.FromSql($"SELECT * FROM ofertas").ToListAsync();
-        }
-
-        // GET: api/Ofertas
-        [HttpGet("Buscar")]
-        public async Task<ActionResult<IEnumerable<Oferta>>> GetBuscarOfertas([FromQuery(Name = "nombre")] string? nombre, [FromQuery(Name = "fecha_inicio")] string? fecha_inicio, [FromQuery(Name = "fecha_fin")] string? fecha_fin, [FromQuery(Name = "num_personas")] int? num_personas)
-        {
-            if (_context.Ofertas == null)
-            {
-                return NotFound();
-            }
-
-            IQueryable<Oferta> query = _context.Ofertas;
-
-            if (!string.IsNullOrEmpty(nombre))
-            {
-                query = query.Where(p => p.Titulo == nombre);
-            }
-
-            string[] date;
-            DateOnly date_inicio;
-            if (!string.IsNullOrEmpty(fecha_inicio))
-            {
-                date = fecha_inicio.Split("-");
-                date_inicio = new DateOnly(Int32.Parse(date[0]), Int32.Parse(date[1]), Int32.Parse(date[2]));
-                query = query.Where(p => p.FechaInicio >= date_inicio);
-            }
-
-            string[] date2;
-            DateOnly date_fin;
-            if (!string.IsNullOrEmpty(fecha_fin))
-            {
-                date2 = fecha_fin.Split("-");
-                date_fin = new DateOnly(Int32.Parse(date2[0]), Int32.Parse(date2[1]), Int32.Parse(date2[2]));
-                query = query.Where(p => p.FechaFin <= date_fin);
-            }
-
-            if (num_personas != null)
-            {
-                query = query.Where(p => p.MaxPersonas == num_personas);
-            }
-
-            return await query.ToListAsync();
+            return await _context.Ofertas.ToListAsync();
         }
 
         // GET: api/Ofertas/5
@@ -131,7 +88,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
         {
           if (_context.Ofertas == null)
           {
-              return Problem("Entity set 'DataBaseContext.Ofertas'  is null.");
+              return Problem("Entity set 'DatabaseContext.Ofertas'  is null.");
           }
             _context.Ofertas.Add(oferta);
             await _context.SaveChangesAsync();

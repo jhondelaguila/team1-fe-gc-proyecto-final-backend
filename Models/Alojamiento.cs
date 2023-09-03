@@ -25,7 +25,5 @@ public partial class Alojamiento
 
     //public virtual ICollection<Oferta> Oferta { get; set; } = new List<Oferta>();
 
-    //public virtual ICollection<Oferta> IdOferta { get; set; } = new List<Oferta>();
-
-    //public virtual ICollection<Servicio> Servicios { get; set; } = new List<Servicio>();
+    //public virtual ICollection<ServiciosAlojamientos> ServiciosAlojamientos { get; set; } = new List<ServiciosAlojamientos>();
 }
