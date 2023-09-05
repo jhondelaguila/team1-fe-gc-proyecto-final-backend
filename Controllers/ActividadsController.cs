@@ -86,11 +86,8 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
 
         // POST: api/Actividads
         [HttpPost]
-        public async Task<ActionResult<IActividadCrear>> PostActividad([FromBody] ActividadCrear actividadObject)
+        public async Task<ActionResult<ActividadCrear>> PostActividad(ActividadCrear actividadObject)
         {
-            
- 
-
             if (actividadObject == null)
             {
                 return BadRequest("Error en el json");
@@ -113,6 +110,11 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
                 .Select(d => d.Id)
                 .FirstOrDefaultAsync();
 
+            if (_context.Actividades == null)
+            {
+                return Problem("Entity set 'DatabaseContext.Direcciones'  is null.");
+            }
+
             //Obtengo la actividad del objjeto que me llega del front
             Actividad actividad = new Actividad(actividadObject.Titulo, actividadObject.Descripcion, idDireccion);
             _context.Actividades.Add(actividad);
@@ -124,6 +126,10 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
                 .Select(a => a.Id)
                 .FirstOrDefaultAsync();
 
+            if (_context.Imagenes == null)
+            {
+                return Problem("Entity set 'DatabaseContext.Direcciones'  is null.");
+            }
             //añado todas las imagenes de la actividad
             foreach (string url in actividadObject.Imagenes){
                 Imagen imagen = new Imagen(url, IdActividad);

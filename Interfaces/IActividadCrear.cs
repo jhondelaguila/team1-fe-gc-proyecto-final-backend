@@ -1,19 +1,6 @@
 ﻿namespace team1_fe_gc_proyecto_final_backend.Interfaces
 {
-    public interface IActividadCrear
-    {
-        string Titulo { get; set; }
-        string Descripcion { get; set; }
-        string Pais { get; set; }
-        string Calle { get; set; }
-        int Numero { get; set; }
-        string CodigoPostal { get; set; }
-        string Provincia { get; set; }
-        string Localidad { get; set; }
-        List<string> Imagenes { get; set; }
-    }
-
-    public class ActividadCrear : IActividadCrear
+    public class ActividadCrear
     {
         public string Titulo { get; set; }
         public string Descripcion { get; set; }
