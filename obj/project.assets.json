@@ -12696,19 +12696,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\alber\\.nuget\\packages\\": {}
+    "C:\\Users\\JHON PC\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\BootcampGC\\PROYECTO\\team1-fe-gc-proyecto-final-backend\\team1-fe-gc-proyecto-final-backend.csproj",
+      "projectUniqueName": "D:\\JJDAP\\repositorios\\team1-fe-gc-proyecto-final-backend\\team1-fe-gc-proyecto-final-backend.csproj",
       "projectName": "team1-fe-gc-proyecto-final-backend",
-      "projectPath": "C:\\BootcampGC\\PROYECTO\\team1-fe-gc-proyecto-final-backend\\team1-fe-gc-proyecto-final-backend.csproj",
-      "packagesPath": "C:\\Users\\alber\\.nuget\\packages\\",
-      "outputPath": "C:\\BootcampGC\\PROYECTO\\team1-fe-gc-proyecto-final-backend\\obj\\",
+      "projectPath": "D:\\JJDAP\\repositorios\\team1-fe-gc-proyecto-final-backend\\team1-fe-gc-proyecto-final-backend.csproj",
+      "packagesPath": "C:\\Users\\JHON PC\\.nuget\\packages\\",
+      "outputPath": "D:\\JJDAP\\repositorios\\team1-fe-gc-proyecto-final-backend\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\alber\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\JHON PC\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
