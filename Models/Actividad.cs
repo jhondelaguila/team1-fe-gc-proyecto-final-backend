@@ -18,4 +18,12 @@ public partial class Actividad
     //public virtual ICollection<Imagen> Imagenes { get; set; } = new List<Imagen>();
 
     //public virtual ICollection<OfertasActividades> OfertasActividades { get; set; } = new List<OfertasActividades>();
+
+    public Actividad(string titulo, string descripcion, int idDireccion)
+    {
+        this.Titulo = titulo;
+        this.Descripcion = descripcion;
+        this.IdDireccion = idDireccion;
+    }
+    public Actividad() { }
 }

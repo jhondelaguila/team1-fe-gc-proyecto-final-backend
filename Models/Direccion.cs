@@ -19,9 +19,28 @@ public partial class Direccion
 
     public int? Numero { get; set; }
 
-//    public virtual ICollection<Actividad> Actividades { get; set; } = new List<Actividad>();
 
-//    public virtual ICollection<Alojamiento> Alojamientos { get; set; } = new List<Alojamiento>();
+    //    public virtual ICollection<Actividad> Actividades { get; set; } = new List<Actividad>();
 
-//    public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
+    //    public virtual ICollection<Alojamiento> Alojamientos { get; set; } = new List<Alojamiento>();
+
+    //    public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
+    
+    public Direccion() { }
+
+    public Direccion(
+        string pais,
+        string provincia,
+        string localidad,
+        string codigoPostal,
+        string calle,
+        int? numero)
+    {
+        Pais = pais;
+        Provincia = provincia;
+        Localidad = localidad;
+        CodigoPostal = codigoPostal;
+        Calle = calle;
+        Numero = numero;
+    }
 }
