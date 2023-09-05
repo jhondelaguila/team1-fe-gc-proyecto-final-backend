@@ -20,4 +20,11 @@ public partial class Imagen
     //public virtual Alojamiento? IdAlojamientoNavigation { get; set; }
 
     //public virtual ICollection<OfertasImagenes> OfertasImagenes { get; set; } = new List<OfertasImagenes>();
+
+    public Imagen() { }
+
+    public Imagen(string Url, int IdActividad) { 
+        this.Url = Url;
+        this.IdActividad = IdActividad;
+    }
 }
