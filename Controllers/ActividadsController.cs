@@ -69,12 +69,6 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
                 Localidad = direccion.Localidad,
                 Imagenes = imagenes
             };
-
-            if (actividad == null)
-            {
-                return NotFound();
-            }
-
             return actividadCompelta;
         }
 
@@ -82,7 +76,8 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutActividad(int id, ActividadCompleta actividadCompleta)
         {
-            if (id != actividadCompleta.Id) {
+            if (id != actividadCompleta.Id) 
+            {
                 throw new Exception($"{id} no es igual a {actividadCompleta.Id}");
             }
 
@@ -196,7 +191,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
 
             if (_context.Imagenes == null)
             {
-                return Problem("Entity set 'DatabaseContext.Direcciones'  is null.");
+                return Problem("Entity set 'DatabaseContext.Imagenes'  is null.");
             }
             //añado todas las imagenes de la actividad
             foreach (string url in actividadObject.Imagenes){
