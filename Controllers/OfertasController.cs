@@ -32,6 +32,43 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
             return await _context.Ofertas.ToListAsync();
         }
 
+        // GET: api/Ofertas
+        [HttpGet("/api/Ofertas/Filtros")]
+        public async Task<ActionResult<IEnumerable<Oferta>>> GetDatosFiltros()
+        {
+            if (_context.Ofertas == null)
+            {
+                return NotFound();
+            }
+            List<Oferta> listOfertas = await _context.Ofertas.ToListAsync();
+            List<Alojamiento> listAlojamientos = new List<Alojamiento>();
+
+            for (int i = 0;i<listOfertas.Count; i++)
+            {
+                var alojamiento = await _context.Alojamientos.FindAsync(listOfertas[i].IdAlojamiento);
+                if (alojamiento != null)
+                {
+                    listAlojamientos.Add(alojamiento);
+                }    
+            }
+
+            List<ServiciosAlojamientos> listS_A = new List<ServiciosAlojamientos>();
+
+            for (int i = 0; i < listAlojamientos.Count; i++)
+            {
+                var s_a = await _context.ServiciosAlojamientos.Where(sa => sa.IdAlojamiento == listAlojamientos[i].Id).ToListAsync();
+                if (s_a != null)
+                {
+                    for(int j=0; j < s_a.Count; j++)
+                    {
+                        listS_A.Add(s_a[i]);
+                    }
+                }
+            }
+
+            return listOfertas;
+        }
+
         // GET: api/Ofertas/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Oferta>> GetOferta(int id)
@@ -49,6 +86,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
 
             return oferta;
         }
+
 
         [HttpGet("Buscar")]
         public async Task<ActionResult<IEnumerable<Oferta>>> GetBuscarOfertas([FromQuery(Name = "nombre")] string? nombre, [FromQuery(Name = "fecha_inicio")] string? fecha_inicio, [FromQuery(Name = "fecha_fin")] string? fecha_fin, [FromQuery(Name = "num_personas")] int? num_personas)
@@ -80,7 +118,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
 
             string[] date2;
             DateOnly date_fin;
-            if (!string.IsNullOrEmpty(fecha_fin) && date_fin != date_inicio)
+            if (!string.IsNullOrEmpty(fecha_fin) && !fecha_fin.Equals(fecha_inicio))
             {
                 date2 = fecha_fin.Split("-");
                 date_fin = new DateOnly(Int32.Parse(date2[0]), Int32.Parse(date2[1]), Int32.Parse(date2[2]));
@@ -89,7 +127,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
 
             if (num_personas != null)
             {
-                query = query.Where(p => p.MaxPersonas == num_personas);
+                query = query.Where(p => p.MaxPersonas >= num_personas);
             }
 
             return await query.ToListAsync();
