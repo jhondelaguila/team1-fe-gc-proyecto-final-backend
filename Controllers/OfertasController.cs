@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using team1_fe_gc_proyecto_final_backend.Data;
 using team1_fe_gc_proyecto_final_backend.Models;
+using team1_fe_gc_proyecto_final_backend.DTOs;
+using Google.Protobuf.Collections;
 
 namespace team1_fe_gc_proyecto_final_backend.Controllers
 {
@@ -34,39 +36,26 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
 
         // GET: api/Ofertas
         [HttpGet("/api/Ofertas/Filtros")]
-        public async Task<ActionResult<IEnumerable<Oferta>>> GetDatosFiltros()
+        public async Task<ActionResult<FiltrosResponseDto>> GetDatosFiltros()
         {
             if (_context.Ofertas == null)
             {
                 return NotFound();
             }
             List<Oferta> listOfertas = await _context.Ofertas.ToListAsync();
-            List<Alojamiento> listAlojamientos = new List<Alojamiento>();
+            List<Alojamiento> listAlojamientos = await _context.Alojamientos.ToListAsync();
+            List<ServiciosAlojamientos> listS_A = await _context.ServiciosAlojamientos.ToListAsync();
 
-            for (int i = 0;i<listOfertas.Count; i++)
+            var response = new FiltrosResponseDto
             {
-                var alojamiento = await _context.Alojamientos.FindAsync(listOfertas[i].IdAlojamiento);
-                if (alojamiento != null)
-                {
-                    listAlojamientos.Add(alojamiento);
-                }    
-            }
+                Ofertas = listOfertas,
+                Alojamientos = listAlojamientos,
+                S_A = listS_A
+                
+            };
 
-            List<ServiciosAlojamientos> listS_A = new List<ServiciosAlojamientos>();
 
-            for (int i = 0; i < listAlojamientos.Count; i++)
-            {
-                var s_a = await _context.ServiciosAlojamientos.Where(sa => sa.IdAlojamiento == listAlojamientos[i].Id).ToListAsync();
-                if (s_a != null)
-                {
-                    for(int j=0; j < s_a.Count; j++)
-                    {
-                        listS_A.Add(s_a[i]);
-                    }
-                }
-            }
-
-            return listOfertas;
+            return response;
         }
 
         // GET: api/Ofertas/5
@@ -89,7 +78,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
 
 
         [HttpGet("Buscar")]
-        public async Task<ActionResult<IEnumerable<Oferta>>> GetBuscarOfertas([FromQuery(Name = "nombre")] string? nombre, [FromQuery(Name = "fecha_inicio")] string? fecha_inicio, [FromQuery(Name = "fecha_fin")] string? fecha_fin, [FromQuery(Name = "num_personas")] int? num_personas)
+        public async Task<ActionResult<FiltrosResponseDto>> GetBuscarOfertas([FromQuery(Name = "nombre")] string? nombre, [FromQuery(Name = "fecha_inicio")] string? fecha_inicio, [FromQuery(Name = "fecha_fin")] string? fecha_fin, [FromQuery(Name = "num_personas")] int? num_personas)
         {
             if (_context.Ofertas == null)
             {
@@ -130,7 +119,42 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
                 query = query.Where(p => p.MaxPersonas >= num_personas);
             }
 
-            return await query.ToListAsync();
+            List<Oferta> listOfertas = await query.ToListAsync();
+            List<Alojamiento> listAlojamientos = new List<Alojamiento>();
+            if(listOfertas != null)
+            {
+                for(int i = 0; i < listOfertas.Count; i++)
+                {
+                    var alojamiento = await _context.Alojamientos.FindAsync(listOfertas[i].IdAlojamiento);
+                    if(alojamiento!= null && !listAlojamientos.Contains(alojamiento))
+                    {
+                            listAlojamientos.Add(alojamiento);
+                    }
+                }
+            }
+
+            List<ServiciosAlojamientos> s_a = new List<ServiciosAlojamientos>();
+
+            for(int i = 0; i < listAlojamientos.Count;i++)
+            {
+                var listS_A = await _context.ServiciosAlojamientos.Where(sa => sa.IdAlojamiento == listAlojamientos[i].Id).ToListAsync();
+                if(listS_A != null)
+                {
+                    for(int j = 0;j < listS_A.Count; j++)
+                    {
+                        s_a.Add(listS_A[j]);
+                    }
+                }
+            }
+
+            var response = new FiltrosResponseDto
+            {
+                Ofertas = listOfertas,
+                Alojamientos = listAlojamientos,
+                S_A = s_a
+            };
+
+            return response;
         }
 
         // PUT: api/Ofertas/5

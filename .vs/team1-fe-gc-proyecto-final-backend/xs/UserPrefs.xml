@@ -1,0 +1,31 @@
+﻿<Properties StartupConfiguration="{C238F07E-8B40-4CBC-A624-3FD0FFB70241}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Program.cs">
+    <Files>
+      <File FileName="Controllers/OfertasController.cs" />
+      <File FileName="DTOs/FiltrosResponseDto.cs" />
+      <File FileName="Controllers/AuthController.cs" />
+      <File FileName="DTOs/SignInResponseDto.cs" />
+      <File FileName="Program.cs" Line="19" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="team1-fe-gc-proyecto-final-backend" expanded="True">
+            <Node name="team1-fe-gc-proyecto-final-backend" expanded="True">
+              <Node name="Controllers" expanded="True" />
+              <Node name="DTOs" expanded="True" />
+              <Node name="Program.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.team1-fe-gc-proyecto-final-backend PreferredExecutionTarget="/Applications/Google Chrome.app" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+</Properties>
