@@ -21,7 +21,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
             _context = context;
         }
 
-        // GET: api/Reservas/user
+        // GET: api/Reservas
         [HttpGet("{id_usuario}")]
         public async Task<ActionResult<IEnumerable<Reserva>>> GetReservas()
         {
