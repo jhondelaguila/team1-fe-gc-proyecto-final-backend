@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using team1_fe_gc_proyecto_final_backend.Data;
 using team1_fe_gc_proyecto_final_backend.Models;
 using team1_fe_gc_proyecto_final_backend.DTOs;
-using Google.Protobuf.Collections;
+//using Google.Protobuf.Collections;
 
 namespace team1_fe_gc_proyecto_final_backend.Controllers
 {
