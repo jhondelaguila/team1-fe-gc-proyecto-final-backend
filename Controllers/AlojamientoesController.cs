@@ -24,13 +24,45 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
 
         // GET: api/Alojamientoes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Alojamiento>>> GetAlojamientos()
+        public async Task<ActionResult<IEnumerable<AlojamientoCompleto>>> GetAlojamientos()
         {
-          if (_context.Alojamientos == null)
-          {
-              return NotFound();
-          }
-            return await _context.Alojamientos.ToListAsync();
+            if (_context.Alojamientos == null)
+            {
+                return NotFound();
+            }
+
+            var alojamientos = await _context.Alojamientos.ToListAsync();
+            var alojamientosCompletos = new List<AlojamientoCompleto>();
+
+            foreach (var alojamiento in alojamientos)
+            {
+                var sqlQueryDireccion = $"SELECT * FROM direcciones WHERE id = {alojamiento.IdDireccion}";
+                var direccion = await _context.Direcciones.FromSqlRaw(sqlQueryDireccion).FirstOrDefaultAsync();
+
+                var sqlQueryImagenes = $"SELECT * FROM imagenes WHERE id_alojamiento = {alojamiento.Id}";
+                var imagenes = await _context.Imagenes.FromSqlRaw(sqlQueryImagenes).ToListAsync();
+
+                var alojamientoCompleto = new AlojamientoCompleto
+                {
+                    Id = alojamiento.Id,
+                    Nombre = alojamiento.Nombre,
+                    Categoria = alojamiento.Categoria,
+                    Telefono = alojamiento.Telefono,
+                    Email = alojamiento.Email,
+                    IdDireccion = direccion.Id,
+                    Pais = direccion.Pais,
+                    Calle = direccion.Calle,
+                    Numero = direccion.Numero ?? 0, // Si es null, será 0 por defecto
+                    CodigoPostal = direccion.CodigoPostal,
+                    Provincia = direccion.Provincia,
+                    Localidad = direccion.Localidad,
+                    Imagenes = imagenes
+                };
+
+                alojamientosCompletos.Add(alojamientoCompleto);
+            }
+
+            return alojamientosCompletos;
         }
 
         // GET: api/Alojamientoes/5
