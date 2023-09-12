@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../buildMultiTargeting/team1-fe-gc-proyecto-final-backend.props" />
-</Project>
