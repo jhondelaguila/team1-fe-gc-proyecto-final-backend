@@ -116,6 +116,26 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
             return NoContent();
         }
 
+        // DELETE: api/Favoritoes/
+        [HttpDelete]
+        public async Task<IActionResult> DeleteFavorito([FromQuery(Name = "id_usuario")] int id_user, [FromQuery(Name = "id_oferta")] int id_oferta)
+        {
+            if (_context.Favoritos == null)
+            {
+                return NotFound();
+            }
+            var favorito = await _context.Favoritos.Where(f => f.IdOferta == id_oferta).Where(f => f.IdUsuario == id_user).FirstOrDefaultAsync();
+            if (favorito == null)
+            {
+                return NotFound();
+            }
+
+            _context.Favoritos.Remove(favorito);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
         private bool FavoritoExists(int id)
         {
             return (_context.Favoritos?.Any(e => e.Id == id)).GetValueOrDefault();

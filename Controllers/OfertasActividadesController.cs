@@ -33,6 +33,24 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
         }
 
         // GET: api/OfertasActividades/5
+        [HttpGet("IdOferta/{id}")]
+        public async Task<ActionResult<IEnumerable<OfertasActividades>>> GetOfertasActividadesByOfertaId(int id)
+        {
+            if (_context.OfertasActividades == null)
+            {
+                return NotFound();
+            }
+            var ofertasActividades = await _context.OfertasActividades.Where(O_A => O_A.IdOferta == id).ToListAsync();
+
+            if (ofertasActividades == null)
+            {
+                return NotFound();
+            }
+
+            return ofertasActividades;
+        }
+
+        // GET: api/OfertasActividades/5
         [HttpGet("{id}")]
         public async Task<ActionResult<OfertasActividades>> GetOfertasActividades(int id)
         {
