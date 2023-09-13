@@ -13,5 +13,6 @@
         public string Provincia { get; set; }
         public string Localidad { get; set; }
         public List<string> Imagenes { get; set; }
+        public List<int> Servicios { get; set; }
     }
 }

@@ -218,7 +218,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
 
             if (_context.Alojamientos == null)
             {
-                return Problem("Entity set 'DatabaseContext.Direcciones'  is null.");
+                return Problem("Entity set 'DatabaseContext.Alojamientos'  is null.");
             }
 
             Alojamiento alojamiento = new Alojamiento
@@ -253,6 +253,25 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
                     IdAlojamiento = IdAlojamiento
                 };
                 _context.Imagenes.Add(imagen);
+            }
+
+            await _context.SaveChangesAsync();
+
+            //  añadimos los servicios del hotel
+
+            if (_context.ServiciosAlojamientos == null)
+            {
+                return Problem("Entity set 'DatabaseContext.Imagenes'  is null.");
+            }
+
+            foreach (int idServicio in alojamientoObjeto.Servicios)
+            {
+                ServiciosAlojamientos serviciosAlojamientos = new ServiciosAlojamientos
+                {
+                    IdServicio = idServicio,
+                    IdAlojamiento = IdAlojamiento
+                };
+                _context.ServiciosAlojamientos.Add(serviciosAlojamientos);
             }
 
             await _context.SaveChangesAsync();

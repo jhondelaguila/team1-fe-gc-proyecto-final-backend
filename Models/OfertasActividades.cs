@@ -11,7 +11,10 @@ public partial class OfertasActividades
 
     public int? IdActividad { get; set; }
 
-//    public virtual Actividad? IdActividadNavigation { get; set; }
-
-//    public virtual Oferta? IdOfertaNavigation { get; set; }
+    public OfertasActividades(int IdOferta, int IdActividad)
+    {
+        this.IdOferta = IdOferta;
+        this.IdActividad = IdActividad;
+    }
+    public OfertasActividades() { }
 }
