@@ -32,6 +32,17 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
             return await _context.Reservas.ToListAsync();
         }
 
+        // GET: api/Reservas
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Reserva>>> GetListReservas()
+        {
+            if (_context.Reservas == null)
+            {
+                return NotFound();
+            }
+            return await _context.Reservas.ToListAsync();
+        }
+
         // GET: api/Reservas/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Reserva>> GetReserva(int id)
