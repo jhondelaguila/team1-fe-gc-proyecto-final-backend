@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using team1_fe_gc_proyecto_final_backend.Data;
 using team1_fe_gc_proyecto_final_backend.Models;
 using team1_fe_gc_proyecto_final_backend.DTOs;
+using team1_fe_gc_proyecto_final_backend.Interfaces;
 //using Google.Protobuf.Collections;
 
 namespace team1_fe_gc_proyecto_final_backend.Controllers
@@ -191,13 +192,212 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
         // POST: api/Ofertas
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Oferta>> PostOferta(Oferta oferta)
+        public async Task<ActionResult<OfertaCrear>> PostOferta(OfertaCrear ofertaCrear)
         {
+
+            if (_context.Direcciones == null)
+            {
+                return Problem("Entity set 'DatabaseContext.Alojamientos'  is null.");
+            }
+
+            Direccion direccion = new Direccion
+            {
+                Pais = ofertaCrear.Alojamiento.Pais,
+                Calle = ofertaCrear.Alojamiento.Calle,
+                Numero = ofertaCrear.Alojamiento.Numero,
+                CodigoPostal = ofertaCrear.Alojamiento.CodigoPostal,
+                Provincia = ofertaCrear.Alojamiento.Provincia,
+                Localidad = ofertaCrear.Alojamiento.Localidad,
+            };
+
+            _context.Direcciones.Add(direccion);
+            //hago efectivo el Add en la base de datos para poder accedder al id
+            await _context.SaveChangesAsync();
+
+            int idDireccion = await _context.Direcciones
+                .Where(d => d.Pais == ofertaCrear.Alojamiento.Pais && d.Provincia == ofertaCrear.Alojamiento.Provincia && d.Localidad == ofertaCrear.Alojamiento.Localidad && d.CodigoPostal == ofertaCrear.Alojamiento.CodigoPostal && d.Calle == ofertaCrear.Alojamiento.Calle && d.Numero == ofertaCrear.Alojamiento.Numero)
+                .Select(d => d.Id)
+                .FirstOrDefaultAsync();
+
+            if (_context.Alojamientos == null)
+            {
+                return Problem("Entity set 'DatabaseContext.Direcciones'  is null.");
+            }
+
+            Alojamiento alojamiento = new Alojamiento
+            {
+                Nombre = ofertaCrear.Alojamiento.Nombre,
+                Categoria = ofertaCrear.Alojamiento.Categoria,
+                Telefono = ofertaCrear.Alojamiento.Telefono,
+                Email = ofertaCrear.Alojamiento.Email,
+                IdDireccion = idDireccion,
+            };
+
+            _context.Alojamientos.Add(alojamiento);
+            await _context.SaveChangesAsync();
+
+            //obtengo el id de la alojamiento que acabo de añadir para crear todas las imagenes (idActividad es un atributo -FK- necesario para crear la imagenes de alojamiento)
+            int IdAlojamiento = await _context.Alojamientos
+                .Where(a => a.Nombre == ofertaCrear.Alojamiento.Nombre && a.IdDireccion == idDireccion && a.Telefono == ofertaCrear.Alojamiento.Telefono)
+                .Select(a => a.Id)
+                .FirstOrDefaultAsync();
+
+            if (_context.Imagenes == null)
+            {
+                return Problem("Entity set 'DatabaseContext.Imagenes'  is null.");
+            }
+            //añado todas las imagenes del alojamiento
+            foreach (string url in ofertaCrear.Alojamiento.Imagenes)
+            {
+                Imagen imagen = new Imagen
+                {
+                    Url = url,
+                    IdAlojamiento = IdAlojamiento
+                };
+                _context.Imagenes.Add(imagen);
+            }
+
+            if (_context.ServiciosAlojamientos == null)
+            {
+                return Problem("Entity set 'DatabaseContext.Imagenes'  is null.");
+            }
+
+            foreach (int idServicio in ofertaCrear.Alojamiento.Servicios)
+            {
+                ServiciosAlojamientos serviciosAlojamientos = new ServiciosAlojamientos
+                {
+                    IdServicio = idServicio,
+                    IdAlojamiento = IdAlojamiento
+                };
+                _context.ServiciosAlojamientos.Add(serviciosAlojamientos);
+            }
+
+            await _context.SaveChangesAsync();
+
+            // CREAR OFERTA
+
             if (_context.Ofertas == null)
             {
                 return Problem("Entity set 'DatabaseContext.Ofertas'  is null.");
             }
+
+            Oferta oferta = new Oferta
+            {
+                Titulo = ofertaCrear.Titulo,
+                Precio = ofertaCrear.PrecioDia,
+                MaxPersonas = ofertaCrear.MaxPersonas,
+                FechaInicio = ofertaCrear.FechaInicio,
+                FechaFin = ofertaCrear.FechaFin,
+                OfertasDisponibles = ofertaCrear.OfertasDisponibles,
+                Descripcion = ofertaCrear.Descripcion,
+                IdAlojamiento = IdAlojamiento
+            };
+
             _context.Ofertas.Add(oferta);
+            await _context.SaveChangesAsync();
+
+            // obtenemos el id de oferta para las relaciones con fotos y actividades
+
+            int idOferta = await _context.Ofertas
+               .Where(o => o.Titulo == oferta.Titulo && o.Precio == oferta.Precio && o.MaxPersonas == oferta.MaxPersonas && o.FechaInicio == oferta.FechaInicio && o.FechaFin == oferta.FechaFin && o.IdAlojamiento == oferta.IdAlojamiento)
+               .Select(o => o.Id)
+               .FirstOrDefaultAsync();
+
+            // CREAR ACTIVIDAD
+
+            foreach (ActividadCrear actividadOferta in ofertaCrear.Actividades)
+            {
+                Direccion direccionActividad = new Direccion(actividadOferta.Pais, actividadOferta.Provincia, actividadOferta.Localidad, actividadOferta.CodigoPostal, actividadOferta.Calle, actividadOferta.Numero);
+                _context.Direcciones.Add(direccionActividad);
+
+                await _context.SaveChangesAsync();
+
+                int idDireccionActividad = await _context.Direcciones
+               .Where(d => d.Pais == actividadOferta.Pais && d.Provincia == actividadOferta.Provincia && d.Localidad == actividadOferta.Localidad && d.CodigoPostal == actividadOferta.CodigoPostal && d.Calle == actividadOferta.Calle && d.Numero == actividadOferta.Numero)
+               .Select(d => d.Id)
+               .FirstOrDefaultAsync();
+
+                if (_context.Actividades == null)
+                {
+                    return Problem("Entity set 'DatabaseContext.Direcciones'  is null.");
+                }
+
+                //Obtengo la actividad del objeto que me llega del front
+                Actividad actividad = new Actividad(actividadOferta.Titulo, actividadOferta.Descripcion, idDireccionActividad);
+                _context.Actividades.Add(actividad);
+                await _context.SaveChangesAsync();
+
+                //obtengo el id de la actividad que acabo de añadir para crear todas las imagenes (idActividad es un atributo -FK- necesario para crear la imagenes de actividades)
+                int IdActividad = await _context.Actividades
+                    .Where(a => a.Titulo == actividadOferta.Titulo && a.Descripcion == actividadOferta.Descripcion && a.IdDireccion == idDireccionActividad)
+                    .Select(a => a.Id)
+                    .FirstOrDefaultAsync();
+
+                if (_context.Imagenes == null)
+                {
+                    return Problem("Entity set 'DatabaseContext.Imagenes'  is null.");
+                }
+                //añado todas las imagenes de la actividad
+                foreach (string url in actividadOferta.Imagenes)
+                {
+                    Imagen imagen = new Imagen
+                    {
+                        Url = url,
+                        IdActividad = IdActividad
+                    };
+                    _context.Imagenes.Add(imagen);
+                }
+
+                // RELACION OFERTAS ACTIVIDADES
+
+                OfertasActividades ofertaActividad = new OfertasActividades
+                {
+                    IdActividad = IdActividad,
+                    IdOferta = idOferta
+                };
+                _context.OfertasActividades.Add(ofertaActividad);
+
+
+                await _context.SaveChangesAsync();
+            }
+            //Obtengo y añado la direccion del objeto que me llega del front
+            
+
+            //hago efectivo el Add en la base de datos para poder accedder al id
+            await _context.SaveChangesAsync();
+
+            // RELACION ACTIVIDADES IMAGENES
+
+            foreach (string url in ofertaCrear.UrlFotos)
+            {
+                Imagen imagen = new Imagen
+                {
+                    Url = url
+                };
+
+                _context.Imagenes.Add(imagen);
+                await _context.SaveChangesAsync();
+
+                // obtengo id de la imagen para la realcioon con ofertas 
+
+                int IdImagenOferta = await _context.Imagenes
+                    .Where(i => i.Url == url)
+                    .Select(i => i.Id)
+                    .FirstOrDefaultAsync();
+
+
+
+                OfertasImagenes ofertasImagenes = new OfertasImagenes
+                {
+                    IdImagen = IdImagenOferta,
+                    IdOferta = idOferta
+                };
+
+                _context.OfertasImagenes.Add(ofertasImagenes);
+
+                await _context.SaveChangesAsync();
+            }
+
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetOferta", new { id = oferta.Id }, oferta);

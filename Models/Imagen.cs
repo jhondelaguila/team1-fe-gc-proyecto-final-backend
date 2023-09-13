@@ -23,7 +23,8 @@ public partial class Imagen
 
     public Imagen() { }
 
-    public Imagen(string Url, int IdActividad) { 
+    public Imagen(string Url, int IdActividad) 
+    { 
         this.Url = Url;
         this.IdActividad = IdActividad;
     }
