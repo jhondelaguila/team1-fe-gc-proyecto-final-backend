@@ -100,9 +100,9 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
             var ofertaCompleta = await _context.Ofertas
                 .Where(o => o.Id == id)
                 .Select(o => new OfertaCompleta
-                 {
-                    Oferta = new Oferta 
-                    { 
+                {
+                    Oferta = new Oferta
+                    {
                         Id = o.Id,
                         Titulo = o.Titulo,
                         Precio = o.Precio,
@@ -113,7 +113,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
                         Descripcion = o.Descripcion,
                         IdAlojamiento = o.IdAlojamiento,
                     },
-                     
+
                     Alojamiento = _context.Alojamientos
                         .Where(a => a.Id == o.IdAlojamiento)
                         .Select(a => new AlojamientoCompleto
@@ -137,7 +137,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
                                 .ToList()
                         })
                         .FirstOrDefault(),
-                     Actividades = _context.OfertasActividades
+                    Actividades = _context.OfertasActividades
                         .Where(oa => oa.IdOferta == o.Id)
                         .Join(_context.Actividades, oa => oa.IdActividad, a => a.Id, (oi, a) => new ActividadCompleta
                         {

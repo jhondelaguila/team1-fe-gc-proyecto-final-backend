@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using team1_fe_gc_proyecto_final_backend.Data;
+using team1_fe_gc_proyecto_final_backend.Interfaces;
 using team1_fe_gc_proyecto_final_backend.Models;
 
 namespace team1_fe_gc_proyecto_final_backend.Controllers
@@ -21,15 +22,43 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
             _context = context;
         }
 
-        // GET: api/Reservas
-        [HttpGet("{id_usuario}")]
-        public async Task<ActionResult<IEnumerable<Reserva>>> GetReservas()
+        // GET: api/Reservas/usuario/6
+        [HttpGet("usuario/{idUsuario}")]
+        public async Task<ActionResult<IEnumerable<ReservasOfertas>>> GetReservas(int idUsuario)
         {
           if (_context.Reservas == null)
           {
               return NotFound();
           }
-            return await _context.Reservas.ToListAsync();
+            try
+            {
+                var reservasUsuario = await _context.Reservas
+                    .Where(r => r.IdUsuario == idUsuario)
+                    .Join(_context.Ofertas, r => r.IdOferta, o => o.Id, (reserva, oferta) => new ReservasOfertas
+                    {
+                        IdReserva = reserva.Id,
+                        TituloOferta = oferta.Titulo,
+                        FechaIni = reserva.FechaInicio,
+                        FechaFinal = reserva.FechaFin,
+                        Direccion = _context.Alojamientos
+                            .Where(a => a.Id == oferta.IdAlojamiento)
+                            .Select(a => _context.Direcciones.FirstOrDefault(d => d.Id == a.IdDireccion))
+                            .FirstOrDefault(),
+                        Estado = reserva.Estado,
+                        PrecioOferta = oferta.Precio,
+                        ImagenOferta = _context.OfertasImagenes
+                            .Where(oi => oi.IdOferta == oferta.Id)
+                            .Join(_context.Imagenes, oi => oi.IdImagen, i => i.Id, (oi, i) => i.Url)
+                            .FirstOrDefault()
+                    })
+                    .ToListAsync();
+
+                return Ok(reservasUsuario);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
         }
 
         // GET: api/Reservas
