@@ -114,7 +114,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
                         IdAlojamiento = o.IdAlojamiento,
                     },
                      
-                    AlojamientoCompleto = _context.Alojamientos
+                    Alojamiento = _context.Alojamientos
                         .Where(a => a.Id == o.IdAlojamiento)
                         .Select(a => new AlojamientoCompleto
                         {
@@ -137,7 +137,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
                                 .ToList()
                         })
                         .FirstOrDefault(),
-                     ActividadesCompletas = _context.OfertasActividades
+                     Actividades = _context.OfertasActividades
                         .Where(oa => oa.IdOferta == o.Id)
                         .Join(_context.Actividades, oa => oa.IdActividad, a => a.Id, (oi, a) => new ActividadCompleta
                         {
