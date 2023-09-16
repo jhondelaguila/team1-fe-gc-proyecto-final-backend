@@ -7,9 +7,9 @@ public partial class OfertasActividades
 {
     public int Id { get; set; }
 
-    public int? IdOferta { get; set; }
+    public int IdOferta { get; set; }
 
-    public int? IdActividad { get; set; }
+    public int IdActividad { get; set; }
 
     public OfertasActividades(int IdOferta, int IdActividad)
     {

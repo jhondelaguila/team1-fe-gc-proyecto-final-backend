@@ -22,9 +22,9 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
             _context = context;
         }
 
-        // GET: api/Alojamientoes
+        //GET: api/Alojamientoes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AlojamientoCompleto>>> GetAlojamientos()
+        public async Task<ActionResult<IEnumerable<AlojamientoFiltros>>> GetAlojamientos()
         {
             if (_context.Alojamientos == null)
             {
@@ -32,7 +32,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
             }
 
             var alojamientos = await _context.Alojamientos.ToListAsync();
-            var alojamientosCompletos = new List<AlojamientoCompleto>();
+            var alojamientosCompletos = new List<AlojamientoFiltros>();
 
             foreach (var alojamiento in alojamientos)
             {
@@ -42,7 +42,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
                 var sqlQueryImagenes = $"SELECT * FROM imagenes WHERE id_alojamiento = {alojamiento.Id}";
                 var imagenes = await _context.Imagenes.FromSqlRaw(sqlQueryImagenes).ToListAsync();
 
-                var alojamientoCompleto = new AlojamientoCompleto
+                var alojamientoCompleto = new AlojamientoFiltros
                 {
                     Id = alojamiento.Id,
                     Nombre = alojamiento.Nombre,
@@ -65,9 +65,58 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
             return alojamientosCompletos;
         }
 
-        // GET: api/Alojamientoes/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<AlojamientoCompleto>> GetAlojamiento(int id)
+        // GET api/alojamientos-detalle/{id}
+        [HttpGet("detalle/{id}")]
+        public async Task<ActionResult<AlojamientoCompleto>> GetAlojamientoCompleto(int id)
+        {
+            try
+            {
+                if (_context.Servicios == null)
+                {
+                    return NotFound();
+                }
+
+                var alojamientoCompleto = await _context.Alojamientos
+                .Where(a => a.Id == id)
+                .Select(a => new AlojamientoCompleto
+                {
+                    Id = a.Id,
+                    Nombre = a.Nombre,
+                    Categoria = a.Categoria,
+                    Telefono = a.Telefono,
+                    Email = a.Email,
+                    Direccion = _context.Direcciones.FirstOrDefault(d => d.Id == a.IdDireccion),
+                    Imagenes = _context.Imagenes
+                        .Where(i => i.IdAlojamiento == a.Id)
+                        .ToList(),
+                    Servicios = _context.ServiciosAlojamientos
+                        .Where(sa => sa.IdAlojamiento == a.Id)
+                        .Select(sa => new Servicio
+                        {
+                            Id = sa.IdServicio,
+                            Nombre = _context.Servicios.FirstOrDefault(s => s.Id == sa.IdServicio).Nombre
+                        })
+                        .ToList()
+                })
+                .FirstOrDefaultAsync();
+
+                if (alojamientoCompleto == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(alojamientoCompleto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
+        }
+
+
+        // GET: api/Alojamientoes/filtros/5
+        [HttpGet("filtros/{id}")]
+        public async Task<ActionResult<AlojamientoFiltros>> GetAlojamiento(int id)
         {
             if (_context.Alojamientos == null)
             {
@@ -88,7 +137,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
             var sqlQueryImagenes = $"SELECT * FROM imagenes WHERE id_alojamiento = {id}";
             var imagenes = await _context.Imagenes.FromSqlRaw(sqlQueryImagenes).ToListAsync();
 
-            var alojamientoCompleto = new AlojamientoCompleto
+            var alojamientoCompleto = new AlojamientoFiltros
             {
                 Id = alojamiento.Id,
                 Nombre = alojamiento.Nombre,
@@ -111,7 +160,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
         // PUT: api/Alojamientoes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAlojamiento(int id, AlojamientoCompleto alojamientoCompleto)
+        public async Task<IActionResult> PutAlojamiento(int id, AlojamientoFiltros alojamientoCompleto)
         {
             if (id != alojamientoCompleto.Id)
             {

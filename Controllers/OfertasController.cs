@@ -35,8 +35,37 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
             return await _context.Ofertas.ToListAsync();
         }
 
+        // GET: api/Ofertas/home
+        [HttpGet("Home")]
+        public async Task<IActionResult> GetOfertasCard()
+        {
+            try
+            {
+
+                var ofertas = await _context.Ofertas
+                    .OrderByDescending(o => o.FechaFin) 
+                    .Select(o => new OfertaCard
+                    {
+                        Titulo = o.Titulo,
+                        Precio = o.Precio,
+                        MaxPersonas = o.MaxPersonas,
+                        Descripcion = o.Descripcion,
+                        FechaFin = o.FechaFin,
+                        FotoPortada = _context.OfertasImagenes
+                            .Where(oi => oi.IdOferta == o.Id).Join(_context.Imagenes, oi => oi.IdImagen, i => i.Id, (oi, i) => i.Url) .FirstOrDefault()
+                    })
+                    .ToListAsync();
+
+                return Ok(ofertas);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
+        }
+
         // GET: api/Ofertas
-        [HttpGet("/api/Ofertas/Filtros")]
+        [HttpGet("Filtros")]
         public async Task<ActionResult<FiltrosResponseDto>> GetDatosFiltros()
         {
             if (_context.Ofertas == null)
@@ -61,20 +90,84 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
 
         // GET: api/Ofertas/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Oferta>> GetOferta(int id)
+        public async Task<ActionResult<OfertaCompleta>> GetOferta(int id)
         {
             if (_context.Ofertas == null)
             {
                 return NotFound();
             }
-            var oferta = await _context.Ofertas.FindAsync(id);
 
-            if (oferta == null)
+            var ofertaCompleta = await _context.Ofertas
+                .Where(o => o.Id == id)
+                .Select(o => new OfertaCompleta
+                 {
+                    Oferta = new Oferta 
+                    { 
+                        Id = o.Id,
+                        Titulo = o.Titulo,
+                        Precio = o.Precio,
+                        MaxPersonas = o.MaxPersonas,
+                        FechaInicio = o.FechaInicio,
+                        FechaFin = o.FechaFin,
+                        OfertasDisponibles = o.OfertasDisponibles,
+                        Descripcion = o.Descripcion,
+                        IdAlojamiento = o.IdAlojamiento,
+                    },
+                     
+                    AlojamientoCompleto = _context.Alojamientos
+                        .Where(a => a.Id == o.IdAlojamiento)
+                        .Select(a => new AlojamientoCompleto
+                        {
+                            Id = a.Id,
+                            Nombre = a.Nombre,
+                            Categoria = a.Categoria,
+                            Telefono = a.Telefono,
+                            Email = a.Email,
+                            Direccion = _context.Direcciones.FirstOrDefault(d => d.Id == a.IdDireccion),
+                            Imagenes = _context.Imagenes
+                                .Where(i => i.IdAlojamiento == a.Id)
+                                .ToList(),
+                            Servicios = _context.ServiciosAlojamientos
+                                .Where(sa => sa.IdAlojamiento == a.Id)
+                                .Select(sa => new Servicio
+                                {
+                                    Id = sa.IdServicio,
+                                    Nombre = _context.Servicios.FirstOrDefault(s => s.Id == sa.IdServicio).Nombre
+                                })
+                                .ToList()
+                        })
+                        .FirstOrDefault(),
+                     ActividadesCompletas = _context.OfertasActividades
+                        .Where(oa => oa.IdOferta == o.Id)
+                        .Join(_context.Actividades, oa => oa.IdActividad, a => a.Id, (oi, a) => new ActividadCompleta
+                        {
+                            Id = a.Id,
+                            Titulo = a.Titulo,
+                            Descripcion = a.Descripcion,
+                            Direccion = _context.Direcciones.FirstOrDefault(d => d.Id == a.IdDireccion),
+                            Imagenes = _context.Imagenes
+                                .Where(i => i.IdActividad == a.Id)
+                                .ToList()
+                        })
+                        .ToList(),
+                    Imagenes = _context.OfertasImagenes
+                        .Where(oi => oi.IdOferta == o.Id)
+                        .Join(_context.Imagenes, oi => oi.IdImagen, i => i.Id, (oi, i) => new Imagen
+                        {
+                            Id = i.Id,
+                            Url = i.Url,
+                        })
+                        .ToList()
+                })
+                .FirstOrDefaultAsync();
+
+
+            if (ofertaCompleta == null)
             {
                 return NotFound();
             }
 
-            return oferta;
+            return ofertaCompleta;
         }
 
 
