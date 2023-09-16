@@ -24,49 +24,30 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
 
         //GET: api/Alojamientoes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AlojamientoFiltros>>> GetAlojamientos()
+        public async Task<ActionResult<IEnumerable<AlojamientoCard>>> GetAlojamientos()
         {
             if (_context.Alojamientos == null)
             {
                 return NotFound();
             }
 
-            var alojamientos = await _context.Alojamientos.ToListAsync();
-            var alojamientosCompletos = new List<AlojamientoFiltros>();
-
-            foreach (var alojamiento in alojamientos)
-            {
-                var sqlQueryDireccion = $"SELECT * FROM direcciones WHERE id = {alojamiento.IdDireccion}";
-                var direccion = await _context.Direcciones.FromSqlRaw(sqlQueryDireccion).FirstOrDefaultAsync();
-
-                var sqlQueryImagenes = $"SELECT * FROM imagenes WHERE id_alojamiento = {alojamiento.Id}";
-                var imagenes = await _context.Imagenes.FromSqlRaw(sqlQueryImagenes).ToListAsync();
-
-                var alojamientoCompleto = new AlojamientoFiltros
+            var alojamientosCard = await _context.Alojamientos
+                .Select(a => new AlojamientoCard
                 {
-                    Id = alojamiento.Id,
-                    Nombre = alojamiento.Nombre,
-                    Categoria = alojamiento.Categoria,
-                    Telefono = alojamiento.Telefono,
-                    Email = alojamiento.Email,
-                    IdDireccion = direccion.Id,
-                    Pais = direccion.Pais,
-                    Calle = direccion.Calle,
-                    Numero = direccion.Numero ?? 0, // Si es null, será 0 por defecto
-                    CodigoPostal = direccion.CodigoPostal,
-                    Provincia = direccion.Provincia,
-                    Localidad = direccion.Localidad,
-                    Imagenes = imagenes
-                };
+                    Id = a.Id,
+                    Nombre = a.Nombre,
+                    Categoria = a.Categoria,
+                    Pais = _context.Direcciones.Where(d => d.Id == a.IdDireccion).Select(d => d.Pais).FirstOrDefault(),
+                    Localidad = _context.Direcciones.Where(d => d.Id == a.IdDireccion).Select(d => d.Localidad).FirstOrDefault(),
+                    FotoPortada = _context.Imagenes.Where(i => i.IdAlojamiento == a.Id).Select(i => i.Url).FirstOrDefault()
+                })
+                .ToListAsync();
 
-                alojamientosCompletos.Add(alojamientoCompleto);
-            }
-
-            return alojamientosCompletos;
+            return alojamientosCard;
         }
 
-        // GET api/alojamientos-detalle/{id}
-        [HttpGet("detalle/{id}")]
+        // GET api/Alojamientoes/{id}
+        [HttpGet("{id}/completo")]
         public async Task<ActionResult<AlojamientoCompleto>> GetAlojamientoCompleto(int id)
         {
             try
@@ -115,7 +96,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
 
 
         // GET: api/Alojamientoes/filtros/5
-        [HttpGet("filtros/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<AlojamientoFiltros>> GetAlojamiento(int id)
         {
             if (_context.Alojamientos == null)
@@ -155,6 +136,44 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
             };
 
             return alojamientoCompleto;
+        }
+
+        // GET: api/Alojamientoes/agenda/{nombre}
+        [HttpGet("agenda/{nombre}")]
+        public async Task<ActionResult<AlojamientoAgenda>> GetAlojamiento(string nombre)
+        {
+            try
+            {
+                var alojamientosAgenda = await _context.Alojamientos
+                    .Join(_context.Direcciones,
+                        alojamiento => alojamiento.IdDireccion,
+                        direccion => direccion.Id,
+                        (alojamiento, direccion) => new AlojamientoAgenda
+                        {
+                            Id = alojamiento.Id,
+                            Nombre = alojamiento.Nombre,
+                            Email = alojamiento.Email,
+                            Telefono = alojamiento.Telefono,
+                            Direccion = new Direccion
+                            {
+                                Id = direccion.Id,
+                                Pais = direccion.Pais,
+                                Provincia = direccion.Provincia,
+                                Localidad = direccion.Localidad,
+                                CodigoPostal = direccion.CodigoPostal,
+                                Calle = direccion.Calle,
+                                Numero = direccion.Numero
+                            }
+                        })
+                    .Where(a => a.Nombre.Contains(nombre) || a.Direccion.Pais.Contains(nombre) || a.Direccion.Localidad.Contains(nombre))
+                    .ToListAsync();
+
+                return Ok(alojamientosAgenda);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
         }
 
         // PUT: api/Alojamientoes/5
