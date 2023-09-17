@@ -46,6 +46,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
                     .OrderByDescending(o => o.FechaFin) 
                     .Select(o => new OfertaCard
                     {
+                        Id = o.Id,
                         Titulo = o.Titulo,
                         Precio = o.Precio,
                         MaxPersonas = o.MaxPersonas,
