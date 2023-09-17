@@ -22,17 +22,6 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
         }
 
         // GET: api/Reservas
-        [HttpGet("{id_usuario}")]
-        public async Task<ActionResult<IEnumerable<Reserva>>> GetReservas()
-        {
-          if (_context.Reservas == null)
-          {
-              return NotFound();
-          }
-            return await _context.Reservas.ToListAsync();
-        }
-
-        // GET: api/Reservas
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Reserva>>> GetListReservas()
         {
@@ -41,6 +30,23 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
                 return NotFound();
             }
             return await _context.Reservas.ToListAsync();
+        }
+
+        // GET: api/Reservas/IdUsuario/{id}
+        [HttpGet("IdUsuario/{id}")]
+        public async Task<ActionResult<IEnumerable<Reserva>>> GetListReservasByUserId(int id)
+        {
+            if (_context.Reservas == null)
+            {
+                return NotFound();
+            }
+            var reservas = await _context.Reservas.Where(r => r.IdUsuario == id).ToListAsync();
+            if(reservas == null)
+            {
+                return NotFound();
+            }
+
+            return reservas;
         }
 
         // GET: api/Reservas/5
