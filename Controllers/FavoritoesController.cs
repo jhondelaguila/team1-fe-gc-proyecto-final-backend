@@ -50,6 +50,24 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
             return favorito;
         }
 
+        // GET: api/Favoritoes/5
+        [HttpGet("IdUsuario/{id}")]
+        public async Task<ActionResult<IEnumerable<Favorito>>> GetFavoritoByUserId(int id)
+        {
+            if (_context.Favoritos == null)
+            {
+                return NotFound();
+            }
+            var favoritos = await _context.Favoritos.Where(f => f.IdUsuario == id).ToListAsync();
+
+            if (favoritos == null)
+            {
+                return NotFound();
+            }
+
+            return favoritos;
+        }
+
         // PUT: api/Favoritoes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
