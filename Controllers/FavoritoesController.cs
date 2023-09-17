@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using team1_fe_gc_proyecto_final_backend.Data;
+using team1_fe_gc_proyecto_final_backend.Interfaces;
 using team1_fe_gc_proyecto_final_backend.Models;
 
 namespace team1_fe_gc_proyecto_final_backend.Controllers
@@ -30,6 +31,38 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
               return NotFound();
           }
             return await _context.Favoritos.ToListAsync();
+        }
+
+        // GET: api/Favoritoes/usuario/{{id}}
+        [HttpGet("Usuario/{idUsuario}")]
+        public async Task<ActionResult<IEnumerable<OfertaCard>>> GetFavoritos(int idUsuario)
+        {
+            if (_context.Favoritos == null)
+            {
+                return NotFound();
+            }
+            var idOfertasFavoritas = await _context.Favoritos
+                .Where(f => f.IdUsuario == idUsuario)
+                .Select(f => f.IdOferta)
+                .ToListAsync();
+
+            var ofertasFavoritas = await _context.Ofertas
+                    .Where(o => idOfertasFavoritas.Contains(o.Id))
+                    .OrderByDescending(o => o.FechaFin)
+                    .Select(o => new OfertaCard
+                    {
+                        Id = o.Id,
+                        Titulo = o.Titulo,
+                        Precio = o.Precio,
+                        MaxPersonas = o.MaxPersonas,
+                        Descripcion = o.Descripcion,
+                        FechaFin = o.FechaFin,
+                        FotoPortada = _context.OfertasImagenes
+                            .Where(oi => oi.IdOferta == o.Id).Join(_context.Imagenes, oi => oi.IdImagen, i => i.Id, (oi, i) => i.Url).FirstOrDefault()
+                    })
+                    .ToListAsync();
+
+            return ofertasFavoritas;
         }
 
         // GET: api/Favoritoes/5
