@@ -179,7 +179,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
         // PUT: api/Alojamientoes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAlojamiento(int id, AlojamientoFiltros alojamientoCompleto)
+        public async Task<IActionResult> PutAlojamiento(int id, AlojamientoCompleto alojamientoCompleto)
         {
             if (id != alojamientoCompleto.Id)
             {
@@ -189,13 +189,13 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
             // obtenemos la direccion del objeto completo
             Direccion direccion = new Direccion
             {
-                Id = alojamientoCompleto.IdDireccion,
-                Pais = alojamientoCompleto.Pais,
-                Calle = alojamientoCompleto.Calle,
-                Numero = alojamientoCompleto.Numero,
-                CodigoPostal = alojamientoCompleto.CodigoPostal,
-                Provincia = alojamientoCompleto.Provincia,
-                Localidad = alojamientoCompleto.Localidad,
+                Id = alojamientoCompleto.Direccion.Id,
+                Pais = alojamientoCompleto.Direccion.Pais,
+                Calle = alojamientoCompleto.Direccion.Calle,
+                Numero = alojamientoCompleto.Direccion.Numero,
+                CodigoPostal = alojamientoCompleto.Direccion.CodigoPostal,
+                Provincia = alojamientoCompleto.Direccion.Provincia,
+                Localidad = alojamientoCompleto.Direccion.Localidad,
             };
 
             _context.Entry(direccion).State = EntityState.Modified;
@@ -231,7 +231,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
                 Categoria = alojamientoCompleto.Categoria,
                 Telefono = alojamientoCompleto.Telefono,
                 Email = alojamientoCompleto.Email,
-                IdDireccion = alojamientoCompleto.IdDireccion
+                IdDireccion = alojamientoCompleto.Direccion.Id
             };
 
             _context.Entry(alojamiento).State = EntityState.Modified;
