@@ -57,7 +57,7 @@ namespace team1_fe_gc_proyecto_final_backend
 
             app.UseCors(options =>
             {
-                options.WithOrigins("https://develop.d2i81o118zpx0s.amplifyapp.com");
+                options.WithOrigins("https://develop.d2i81o118zpx0s.amplifyapp.com", "https://localhost:4200");
                 options.AllowAnyMethod();
                 options.AllowAnyHeader();
             });
