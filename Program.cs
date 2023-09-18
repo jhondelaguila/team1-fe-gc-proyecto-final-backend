@@ -10,6 +10,9 @@ var startup = new Startup(builder.Configuration);
 
 startup.ConfigureServices(builder.Services);
 
+var port = Environment.GetEnvironmentVariable() ?? "3000";
+builder.WebHost.UseUrls($"http://*:{port};")
+
 var app = builder.Build();
 
 startup.Configure(app, app.Environment);
