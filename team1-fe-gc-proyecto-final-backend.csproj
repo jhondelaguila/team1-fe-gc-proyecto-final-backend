@@ -33,12 +33,4 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Remove=".env" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include=".env">
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
 </Project>
