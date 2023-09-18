@@ -9,6 +9,7 @@ using team1_fe_gc_proyecto_final_backend.Data;
 using team1_fe_gc_proyecto_final_backend.Models;
 using team1_fe_gc_proyecto_final_backend.DTOs;
 using team1_fe_gc_proyecto_final_backend.Interfaces;
+using Ubiety.Dns.Core;
 //using Google.Protobuf.Collections;
 
 namespace team1_fe_gc_proyecto_final_backend.Controllers
@@ -87,6 +88,63 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
 
 
             return response;
+        }
+
+        //GET: api/Ofertas
+       [HttpGet("FiltrosCard")]
+        public async Task<ActionResult<OfertaFiltro>> GetOfertasFiltrosCard()
+        {
+            var ofertasCompletas = await _context.Ofertas
+                .Select(o => new OfertaFiltro
+                {
+                    Oferta = new OfertaCard
+                    {
+                        Id = o.Id,
+                        Titulo = o.Titulo,
+                        Precio = o.Precio,
+                        MaxPersonas = o.MaxPersonas,
+                        Descripcion = o.Descripcion,
+                        FechaFin = o.FechaFin,
+                        FotoPortada = _context.OfertasImagenes
+                            .Where(oi => oi.IdOferta == o.Id)
+                            .Join(_context.Imagenes, oi => oi.IdImagen, i => i.Id, (oi, i) => i.Url)
+                            .FirstOrDefault()
+                    },
+                    CategoriaAlojamiento = _context.Alojamientos
+                        .Where(a => a.Id == o.IdAlojamiento)
+                        .Select(a => a.Categoria)
+                        .FirstOrDefault(),
+                    DireccionAlojamiento = _context.Alojamientos
+                        .Where(a => a.Id == o.IdAlojamiento)
+                        .Join(
+                            _context.Direcciones,
+                            alojamiento => alojamiento.IdDireccion,
+                            direccion => direccion.Id,
+                            (alojamiento, direccion) => new Direccion
+                            {
+                                Id = direccion.Id,
+                                Pais = direccion.Pais,
+                                Provincia = direccion.Provincia,
+                                Localidad = direccion.Localidad,
+                                CodigoPostal = direccion.CodigoPostal,
+                                Calle = direccion.Calle,
+                                Numero = direccion.Numero
+                            }
+                        )
+                        .FirstOrDefault(),
+                    ServiciosAlojamiento = _context.ServiciosAlojamientos
+                        .Where(sa => sa.IdAlojamiento == o.Id)
+                        .Join(_context.Servicios, sa => sa.IdServicio, s => s.Id, (sa, s) => new Servicio
+                        {
+                            Id = s.Id,
+                            Nombre = s.Nombre
+                        })
+                        .ToList()
+                })
+                .ToListAsync();
+
+
+            return Ok(ofertasCompletas);
         }
 
         // GET: api/Ofertas/5
@@ -173,83 +231,69 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
 
 
         [HttpGet("Buscar")]
-        public async Task<ActionResult<FiltrosResponseDto>> GetBuscarOfertas([FromQuery(Name = "nombre")] string? nombre, [FromQuery(Name = "fecha_inicio")] string? fecha_inicio, [FromQuery(Name = "fecha_fin")] string? fecha_fin, [FromQuery(Name = "num_personas")] int? num_personas)
+        public async Task<ActionResult<IEnumerable<OfertaFiltro>>> GetBuscarOfertas(
+            [FromQuery(Name = "ubicacion")] string? ubicacion,
+            [FromQuery(Name = "fecha_inicio")] string? fecha_inicio,
+            [FromQuery(Name = "fecha_fin")] string? fecha_fin,
+            [FromQuery(Name = "num_personas")] int? num_personas)
         {
-            if (_context.Ofertas == null)
-            {
-                return NotFound();
-            }
-
-            IQueryable<Oferta> query = _context.Ofertas;
-
-            if (!string.IsNullOrEmpty(nombre))
-            {
-                query = query.Where(p => p.Titulo == nombre);
-            }
-
-            string[] date;
-            DateOnly date_inicio;
-            if (!string.IsNullOrEmpty(fecha_inicio))
-            {
-                date = fecha_inicio.Split("-");
-                date_inicio = new DateOnly(Int32.Parse(date[0]), Int32.Parse(date[1]), Int32.Parse(date[2]));
-                query = query.Where(p => p.FechaInicio >= date_inicio);
-            }
-            else
-            {
-                return BadRequest();
-            }
-
-            string[] date2;
-            DateOnly date_fin;
-            if (!string.IsNullOrEmpty(fecha_fin) && !fecha_fin.Equals(fecha_inicio))
-            {
-                date2 = fecha_fin.Split("-");
-                date_fin = new DateOnly(Int32.Parse(date2[0]), Int32.Parse(date2[1]), Int32.Parse(date2[2]));
-                query = query.Where(p => p.FechaFin <= date_fin);
-            }
-
-            if (num_personas != null)
-            {
-                query = query.Where(p => p.MaxPersonas >= num_personas);
-            }
-
-            List<Oferta> listOfertas = await query.ToListAsync();
-            List<Alojamiento> listAlojamientos = new List<Alojamiento>();
-            if (listOfertas != null)
-            {
-                for (int i = 0; i < listOfertas.Count; i++)
+            var query = _context.Ofertas
+                .Join(
+                    _context.Alojamientos,
+                    o => o.IdAlojamiento,
+                    a => a.Id,
+                    (o, a) => new { Oferta = o, Alojamiento = a }
+                )
+                .Join(
+                    _context.Direcciones,
+                    oa => oa.Alojamiento.IdDireccion,
+                    d => d.Id,
+                    (oa, d) => new { OfertaAlojamiento = oa, Direccion = d }
+                )
+                .Where(oa =>
+                    ((string.IsNullOrEmpty(ubicacion) || oa.Direccion.Localidad.ToLower().Contains(ubicacion.ToLower())) || oa.Direccion.Pais.ToLower().Contains(ubicacion.ToLower()) || oa.Direccion.Provincia.ToLower().Contains(ubicacion.ToLower())) &&
+                    (string.IsNullOrEmpty(fecha_inicio) || DateOnly.Parse(fecha_inicio) >= oa.OfertaAlojamiento.Oferta.FechaInicio) &&
+                    (string.IsNullOrEmpty(fecha_fin) || DateOnly.Parse(fecha_fin) <= oa.OfertaAlojamiento.Oferta.FechaFin) &&
+                    (!num_personas.HasValue || num_personas <= oa.OfertaAlojamiento.Oferta.MaxPersonas)
+                )
+                .Select(oa => new OfertaFiltro
                 {
-                    var alojamiento = await _context.Alojamientos.FindAsync(listOfertas[i].IdAlojamiento);
-                    if (alojamiento != null && !listAlojamientos.Contains(alojamiento))
+                    Oferta = new OfertaCard
                     {
-                        listAlojamientos.Add(alojamiento);
-                    }
-                }
-            }
-
-            List<ServiciosAlojamientos> s_a = new List<ServiciosAlojamientos>();
-
-            for (int i = 0; i < listAlojamientos.Count; i++)
-            {
-                var listS_A = await _context.ServiciosAlojamientos.Where(sa => sa.IdAlojamiento == listAlojamientos[i].Id).ToListAsync();
-                if (listS_A != null)
-                {
-                    for (int j = 0; j < listS_A.Count; j++)
+                        Id = oa.OfertaAlojamiento.Oferta.Id,
+                        Titulo = oa.OfertaAlojamiento.Oferta.Titulo,
+                        Precio = oa.OfertaAlojamiento.Oferta.Precio,
+                        MaxPersonas = oa.OfertaAlojamiento.Oferta.MaxPersonas,
+                        Descripcion = oa.OfertaAlojamiento.Oferta.Descripcion,
+                        FechaFin = oa.OfertaAlojamiento.Oferta.FechaFin,
+                        FotoPortada = _context.OfertasImagenes
+                            .Where(oi => oi.IdOferta == oa.OfertaAlojamiento.Oferta.Id)
+                            .Join(_context.Imagenes, oi => oi.IdImagen, i => i.Id, (oi, i) => i.Url)
+                            .FirstOrDefault()
+                    },
+                    CategoriaAlojamiento = oa.OfertaAlojamiento.Alojamiento.Categoria,
+                    DireccionAlojamiento = new Direccion
                     {
-                        s_a.Add(listS_A[j]);
-                    }
-                }
-            }
+                        Pais = oa.Direccion.Pais,
+                        Provincia = oa.Direccion.Provincia,
+                        Localidad = oa.Direccion.Localidad,
+                        CodigoPostal = oa.Direccion.CodigoPostal,
+                        Calle = oa.Direccion.Calle,
+                        Numero = oa.Direccion.Numero
+                    },
+                    ServiciosAlojamiento = _context.ServiciosAlojamientos
+                        .Where(sa => sa.IdAlojamiento == oa.OfertaAlojamiento.Alojamiento.Id)
+                        .Join(_context.Servicios, sa => sa.IdServicio, s => s.Id, (sa, s) => new Servicio
+                        {
+                            Id = s.Id,
+                            Nombre = s.Nombre
+                        })
+                        .ToList()
+                });
 
-            var response = new FiltrosResponseDto
-            {
-                Ofertas = listOfertas,
-                Alojamientos = listAlojamientos,
-                S_A = s_a
-            };
+            var ofertasFiltradas = await query.ToListAsync();
 
-            return response;
+            return Ok(ofertasFiltradas);
         }
 
         // PUT: api/Ofertas/5
