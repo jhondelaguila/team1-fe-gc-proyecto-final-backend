@@ -17,7 +17,9 @@ namespace team1_fe_gc_proyecto_final_backend
         public void ConfigureServices(IServiceCollection services)
         {
             var connection = Configuration.GetConnectionString("vivaviajes-db");
-            services.AddDbContext<DatabaseContext>(options => options.UseMySql(connection, Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.23-mysql")));
+            services.AddDbContext<DatabaseContext>(options => options.UseMySql(
+                connection, Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.23-mysql"), 
+                sqlServerOptions => sqlServerOptions.CommandTimeout(200)));
 
             services.AddControllers();
 
@@ -55,7 +57,8 @@ namespace team1_fe_gc_proyecto_final_backend
 
             app.UseCors(options =>
             {
-                options.WithOrigins("https://localhost:4200");
+                options.WithOrigins("https://develop.d2i81o118zpx0s.amplifyapp.com", "https://localhost:4200");
+                options.AllowAnyOrigin();
                 options.AllowAnyMethod();
                 options.AllowAnyHeader();
             });

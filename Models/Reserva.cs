@@ -11,9 +11,9 @@ public partial class Reserva
 
     public int? IdUsuario { get; set; }
 
-    public DateOnly? FechaInicio { get; set; }
+    public DateOnly FechaInicio { get; set; }
 
-    public DateOnly? FechaFin { get; set; }
+    public DateOnly FechaFin { get; set; }
 
     public string? Estado { get; set; }
 

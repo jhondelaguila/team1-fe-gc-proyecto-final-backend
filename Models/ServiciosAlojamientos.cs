@@ -7,9 +7,9 @@ public partial class ServiciosAlojamientos
 {
     public int Id { get; set; }
 
-    public int? IdServicio { get; set; }
+    public int IdServicio { get; set; }
 
-    public int? IdAlojamiento { get; set; }
+    public int IdAlojamiento { get; set; }
 
     //public virtual Alojamiento? IdAlojamientoNavigation { get; set; }
 

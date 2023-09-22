@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using team1_fe_gc_proyecto_final_backend.Data;
+using team1_fe_gc_proyecto_final_backend.Interfaces;
 using team1_fe_gc_proyecto_final_backend.Models;
 
 namespace team1_fe_gc_proyecto_final_backend.Controllers
@@ -32,6 +33,38 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
             return await _context.Favoritos.ToListAsync();
         }
 
+        // GET: api/Favoritoes/usuario/{{id}}
+        [HttpGet("Usuario/{idUsuario}")]
+        public async Task<ActionResult<IEnumerable<OfertaCard>>> GetFavoritos(int idUsuario)
+        {
+            if (_context.Favoritos == null)
+            {
+                return NotFound();
+            }
+            var idOfertasFavoritas = await _context.Favoritos
+                .Where(f => f.IdUsuario == idUsuario)
+                .Select(f => f.IdOferta)
+                .ToListAsync();
+
+            var ofertasFavoritas = await _context.Ofertas
+                    .Where(o => idOfertasFavoritas.Contains(o.Id))
+                    .OrderByDescending(o => o.FechaFin)
+                    .Select(o => new OfertaCard
+                    {
+                        Id = o.Id,
+                        Titulo = o.Titulo,
+                        Precio = o.Precio,
+                        MaxPersonas = o.MaxPersonas,
+                        Descripcion = o.Descripcion,
+                        FechaFin = o.FechaFin,
+                        FotoPortada = _context.OfertasImagenes
+                            .Where(oi => oi.IdOferta == o.Id).Join(_context.Imagenes, oi => oi.IdImagen, i => i.Id, (oi, i) => i.Url).FirstOrDefault()
+                    })
+                    .ToListAsync();
+
+            return ofertasFavoritas;
+        }
+
         // GET: api/Favoritoes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Favorito>> GetFavorito(int id)
@@ -48,6 +81,24 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
             }
 
             return favorito;
+        }
+
+        // GET: api/Favoritoes/5
+        [HttpGet("IdUsuario/{id}")]
+        public async Task<ActionResult<IEnumerable<Favorito>>> GetFavoritoByUserId(int id)
+        {
+            if (_context.Favoritos == null)
+            {
+                return NotFound();
+            }
+            var favoritos = await _context.Favoritos.Where(f => f.IdUsuario == id).ToListAsync();
+
+            if (favoritos == null)
+            {
+                return NotFound();
+            }
+
+            return favoritos;
         }
 
         // PUT: api/Favoritoes/5
@@ -114,6 +165,26 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        // DELETE: api/Favoritoes/
+        [HttpDelete]
+        public async Task<IActionResult> DeleteFavorito([FromQuery(Name = "id_usuario")] int id_user, [FromQuery(Name = "id_oferta")] int id_oferta)
+        {
+            if (_context.Favoritos == null)
+            {
+                return NotFound();
+            }
+            var favorito = await _context.Favoritos.Where(f => f.IdOferta == id_oferta).Where(f => f.IdUsuario == id_user).FirstOrDefaultAsync();
+            if (favorito == null)
+            {
+                return NotFound();
+            }
+
+            _context.Favoritos.Remove(favorito);
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
 
         private bool FavoritoExists(int id)
