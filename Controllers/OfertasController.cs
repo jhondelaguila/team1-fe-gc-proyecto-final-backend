@@ -105,6 +105,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
                         MaxPersonas = o.MaxPersonas,
                         Descripcion = o.Descripcion,
                         FechaFin = o.FechaFin,
+                        ofertasDisponibles = o.OfertasDisponibles,
                         FotoPortada = _context.OfertasImagenes
                             .Where(oi => oi.IdOferta == o.Id)
                             .Join(_context.Imagenes, oi => oi.IdImagen, i => i.Id, (oi, i) => i.Url)
