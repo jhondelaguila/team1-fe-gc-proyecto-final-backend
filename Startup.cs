@@ -38,7 +38,15 @@ namespace team1_fe_gc_proyecto_final_backend
                 });
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowOrigin", builder =>
+                    builder
+                        .WithOrigins("https://main.d2i81o118zpx0s.amplifyapp.com", "https://develop.d2i81o118zpx0s.amplifyapp.com", "http://localhost:4200") // Reemplaza con la URL de tu frontend
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                );
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -54,14 +62,7 @@ namespace team1_fe_gc_proyecto_final_backend
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseCors(options =>
-            {
-                options.WithOrigins("https://main.d2i81o118zpx0s.amplifyapp.com" ,"https://develop.d2i81o118zpx0s.amplifyapp.com", "https://localhost:4200");
-                // options.AllowAnyOrigin();
-                options.AllowAnyMethod();
-                options.AllowAnyHeader();
-            });
+            app.UseCors("AllowOrigin");
 
             app.UseHttpsRedirection();
             app.UseRouting();
