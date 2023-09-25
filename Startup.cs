@@ -63,7 +63,6 @@ namespace team1_fe_gc_proyecto_final_backend
                 app.UseDeveloperExceptionPage();
             }
             app.UseCors("AllowOrigin");
-
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();
