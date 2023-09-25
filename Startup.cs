@@ -42,8 +42,8 @@ namespace team1_fe_gc_proyecto_final_backend
             {
                 options.AddPolicy("AllowOrigin", builder =>
                     builder
-                        .WithOrigins("https://main.d2i81o118zpx0s.amplifyapp.com")
-                        // .AllowAnyMethod()
+                        // .WithOrigins("https://main.d2i81o118zpx0s.amplifyapp.com")
+                        .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowAnyOrigin()
                 );
