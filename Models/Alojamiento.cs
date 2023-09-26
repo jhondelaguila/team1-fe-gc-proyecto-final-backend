@@ -11,8 +11,6 @@ public partial class Alojamiento
 
     public short Categoria { get; set; }
 
-    public string? Web { get; set; }
-
     public string Telefono { get; set; } = null!;
 
     public string Email { get; set; } = null!;
