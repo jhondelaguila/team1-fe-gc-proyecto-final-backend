@@ -86,9 +86,6 @@ public partial class DatabaseContext : DbContext
             entity.Property(e => e.Telefono)
                 .HasMaxLength(9)
                 .HasColumnName("telefono");
-            entity.Property(e => e.Web)
-                .HasMaxLength(100)
-                .HasColumnName("web");
 
             //entity.HasOne(d => d.IdDireccionNavigation).WithMany(p => p.Alojamientos)
             //    .HasForeignKey(d => d.IdDireccion)
