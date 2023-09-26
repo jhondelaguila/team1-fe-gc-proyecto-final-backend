@@ -42,7 +42,7 @@ namespace team1_fe_gc_proyecto_final_backend
             {
                 options.AddPolicy("AllowOrigin", builder =>
                     builder
-                        .WithOrigins("https://main.d2i81o118zpx0s.amplifyapp.com", "https://develop.d2i81o118zpx0s.amplifyapp.com", "http://localhost:4200") // Reemplaza con la URL de tu frontend
+                        // .WithOrigins("https://main.d2i81o118zpx0s.amplifyapp.com")
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowAnyOrigin()
