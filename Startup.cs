@@ -42,10 +42,10 @@ namespace team1_fe_gc_proyecto_final_backend
             {
                 options.AddPolicy("AllowOrigin", builder =>
                     builder
-                        .WithOrigins("http://localhost:4200/")
+                        // .WithOrigins("http://localhost:4200/")
                         .AllowAnyMethod()
                         .AllowAnyHeader()
-                        // .AllowAnyOrigin()
+                        .AllowAnyOrigin()
                 );
             });
         }
