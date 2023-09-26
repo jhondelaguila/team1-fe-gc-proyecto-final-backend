@@ -42,10 +42,10 @@ namespace team1_fe_gc_proyecto_final_backend
             {
                 options.AddPolicy("AllowOrigin", builder =>
                     builder
-                        // .WithOrigins("https://main.d2i81o118zpx0s.amplifyapp.com")
+                        .WithOrigins("http://localhost:4200/")
                         .AllowAnyMethod()
                         .AllowAnyHeader()
-                        .AllowAnyOrigin()
+                        // .AllowAnyOrigin()
                 );
             });
         }
