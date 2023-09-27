@@ -543,7 +543,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
         //POST: api/Ofertas/SinAlojamiento\
 
         //Endpoint que crea una oferta con un alojamiento que ya existe
-        [HttpPut("SinAlojamiento")]
+        [HttpPost("SinAlojamiento")]
         public async Task<ActionResult<OfertaCrear>> PostOfertaSinAlojamiento(OfertaCrearAlojamientoAgenda ofertaCrear)
         {
             // CREAR OFERTA
@@ -678,7 +678,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
         //POST: api/Ofertas/SinActividad
 
         //Endpoint que crea una oferta con actividades que ya existen
-        [HttpPut("SinActividad")]
+        [HttpPost("SinActividad")]
         public async Task<ActionResult<OfertaCrear>> PostOfertaSinActividad(OfertaCrearActividadAgenda ofertaCrear)
         {
 
@@ -853,7 +853,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
         //POST: api/Ofertas/SinActividadSinAlojamiento
 
         //Endpoint que crea una oferta con un alojamiento y actividades ya existentes
-        [HttpPut("SinActividadSinAlojamiento")]
+        [HttpPost("SinActividadSinAlojamiento")]
         public async Task<ActionResult<OfertaCrear>> PostOfertaSinActividadSinAlojamiento(OfertaCrearActividadAlojamientoAgenda ofertaCrear)
         {
             // CREAR OFERTA
