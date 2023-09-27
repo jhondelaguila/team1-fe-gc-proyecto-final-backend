@@ -152,6 +152,7 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
                         {
                             Id = alojamiento.Id,
                             Nombre = alojamiento.Nombre,
+                            Categoria = alojamiento.Categoria,
                             Email = alojamiento.Email,
                             Telefono = alojamiento.Telefono,
                             Direccion = new Direccion
