@@ -252,7 +252,8 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
                     (oa, d) => new { OfertaAlojamiento = oa, Direccion = d }
                 )
                 .Where(oa =>
-                    ((string.IsNullOrEmpty(ubicacion) || oa.Direccion.Localidad.ToLower().Contains(ubicacion.ToLower())) || oa.Direccion.Pais.ToLower().Contains(ubicacion.ToLower()) || oa.Direccion.Provincia.ToLower().Contains(ubicacion.ToLower())) &&
+                    ((string.IsNullOrEmpty(ubicacion) || oa.Direccion.Localidad.ToLower().Contains(ubicacion.ToLower())) 
+                    || oa.Direccion.Pais.ToLower().Contains(ubicacion.ToLower()) || oa.Direccion.Provincia.ToLower().Contains(ubicacion.ToLower())) &&
                     (string.IsNullOrEmpty(fecha_inicio) || DateOnly.Parse(fecha_inicio) >= oa.OfertaAlojamiento.Oferta.FechaInicio) &&
                     (string.IsNullOrEmpty(fecha_fin) || DateOnly.Parse(fecha_fin) <= oa.OfertaAlojamiento.Oferta.FechaFin) &&
                     (!num_personas.HasValue || num_personas <= oa.OfertaAlojamiento.Oferta.MaxPersonas)
@@ -270,7 +271,8 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
                         FotoPortada = _context.OfertasImagenes
                             .Where(oi => oi.IdOferta == oa.OfertaAlojamiento.Oferta.Id)
                             .Join(_context.Imagenes, oi => oi.IdImagen, i => i.Id, (oi, i) => i.Url)
-                            .FirstOrDefault()
+                            .FirstOrDefault(),
+                        ofertasDisponibles = oa.OfertaAlojamiento.Oferta.OfertasDisponibles
                     },
                     CategoriaAlojamiento = oa.OfertaAlojamiento.Alojamiento.Categoria,
                     DireccionAlojamiento = new Direccion
