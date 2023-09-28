@@ -271,7 +271,8 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
                         FotoPortada = _context.OfertasImagenes
                             .Where(oi => oi.IdOferta == oa.OfertaAlojamiento.Oferta.Id)
                             .Join(_context.Imagenes, oi => oi.IdImagen, i => i.Id, (oi, i) => i.Url)
-                            .FirstOrDefault()
+                            .FirstOrDefault(),
+                        ofertasDisponibles = oa.OfertaAlojamiento.Oferta.OfertasDisponibles
                     },
                     CategoriaAlojamiento = oa.OfertaAlojamiento.Alojamiento.Categoria,
                     DireccionAlojamiento = new Direccion
