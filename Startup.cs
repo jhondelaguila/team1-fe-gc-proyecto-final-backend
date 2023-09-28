@@ -43,7 +43,6 @@ namespace team1_fe_gc_proyecto_final_backend
                 options.AddPolicy("AllowOrigin", builder =>
                     builder
                         // .WithOrigins("http://localhost:4200/")
-                        .AllowAnyOrigin()
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowAnyOrigin()
