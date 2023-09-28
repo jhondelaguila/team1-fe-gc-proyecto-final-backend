@@ -80,14 +80,35 @@ namespace team1_fe_gc_proyecto_final_backend.Controllers
           {
               return NotFound();
           }
-            var reserva = await _context.Reservas.FindAsync(id);
-
-            if (reserva == null)
+            try
             {
-                return NotFound();
-            }
+                var reserva = await _context.Reservas
+                    .Where(r => r.Id == id)
+                    .Join(_context.Ofertas, r => r.IdOferta, o => o.Id, (reserva, oferta) => new ReservasOfertas
+                    {
+                        IdReserva = reserva.Id,
+                        TituloOferta = oferta.Titulo,
+                        FechaIni = reserva.FechaInicio,
+                        FechaFinal = reserva.FechaFin,
+                        Direccion = _context.Alojamientos
+                            .Where(a => a.Id == oferta.IdAlojamiento)
+                            .Select(a => _context.Direcciones.FirstOrDefault(d => d.Id == a.IdDireccion))
+                            .FirstOrDefault(),
+                        Estado = reserva.Estado,
+                        PrecioOferta = oferta.Precio,
+                        ImagenOferta = _context.OfertasImagenes
+                            .Where(oi => oi.IdOferta == oferta.Id)
+                            .Join(_context.Imagenes, oi => oi.IdImagen, i => i.Id, (oi, i) => i.Url)
+                            .FirstOrDefault()
+                    })
+                    .FirstOrDefaultAsync();
 
-            return reserva;
+                return Ok(reserva);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }
         }
 
         // PUT: api/Reservas/5
